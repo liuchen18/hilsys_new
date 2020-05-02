@@ -32,18 +32,6 @@ if __name__ == "__main__":
 
     exe = Executor(file_path='/home/chen/ws_chen/src/hilsys/sim_sys/data/fwx_planned_trajectory_he.txt')
 
-    # read trajectory from the txt file
-    exe.read_trajectory()
-    driver.read_trajectory()
-
-    o_to_wx_tf_list = driver.get_o_to_wx_tf_list()
-    for tf_idx in range(len(o_to_wx_tf_list)):
-        # get a tf from o_to_wx_tf_list
-        o_to_wx_tf = o_to_wx_tf_list[tf_idx]
-        # compute the parallel pose and serial pose from modified matrix
-        (parallel_pose_desired, serial_pose_desired) = seri_ik.compute_ik_from_o_to_wx_tf(o_to_wx_tf)
-        # drive store both parallel pose and serial pose inside
-        driver.append_pose_desired(parallel_pose_desired, serial_pose_desired)
 
     listened_to_fixed = False
 
@@ -66,6 +54,19 @@ if __name__ == "__main__":
         rospy.logerr("Waiting for listening to initial offset")
         rate.sleep()
     rospy.loginfo("Have successfully listened to initial offset")
+
+        # read trajectory from the txt file
+    exe.read_trajectory()
+    driver.read_trajectory()
+
+    o_to_wx_tf_list = driver.get_o_to_wx_tf_list()
+    for tf_idx in range(len(o_to_wx_tf_list)):
+        # get a tf from o_to_wx_tf_list
+        o_to_wx_tf = o_to_wx_tf_list[tf_idx]
+        # compute the parallel pose and serial pose from modified matrix
+        (parallel_pose_desired, serial_pose_desired) = seri_ik.compute_ik_from_o_to_wx_tf(o_to_wx_tf)
+        # drive store both parallel pose and serial pose inside
+        driver.append_pose_desired(parallel_pose_desired, serial_pose_desired)
 
     #drive the robot to the init pose
     try:
@@ -94,3 +95,4 @@ if __name__ == "__main__":
     except:
         rospy.logerr('unable to start new thread, plz try again')
         exit()
+    
