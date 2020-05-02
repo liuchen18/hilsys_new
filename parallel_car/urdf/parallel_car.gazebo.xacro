@@ -1,0 +1,57 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+    <!--gazebo colors-->
+    <gazebo reference="car_link">
+        <material>Gazebo/Green</material>
+    </gazebo>
+
+    <gazebo reference="barX_link">
+        <material>Gazebo/Blue</material>
+    </gazebo>
+
+    <gazebo reference="barY_link">
+        <material>Gazebo/RedGlow</material>
+    </gazebo>
+
+    <gazebo reference="barZ_link">
+        <material>Gazebo/Yellow</material>
+    </gazebo>
+
+    <gazebo reference="wx_link">
+        <material>Gazebo/White</material>
+    </gazebo>
+
+    <gazebo reference="down_link">
+        <material>Gazebo/Grey</material>
+    </gazebo>
+
+    <gazebo reference="up_link">
+        <material>Gazebo/Orange</material>
+    </gazebo>
+
+    <gazebo reference="addon_Vertical_link">
+        <material>Gazebo/Purple</material>
+    </gazebo>
+    
+    <!-- ros_control plugin -->
+    <gazebo>
+        <plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so">
+            <robotNamespace>/parallel_car</robotNamespace>
+            <robotParam>/parallel_car/robot_description</robotParam>
+            <robotSimType>gazebo_ros_control/DefaultRobotHWSim</robotSimType>
+        </plugin>
+    </gazebo>
+
+    <!-- with support links and joints, do not need to use planar_move -->
+    <!--gazebo>
+        <plugin name="base_controller" filename="libgazebo_ros_planar_move.so">
+            <commandTopic>cmd_vel</commandTopic>
+            <odometryTopic>odom</odometryTopic>
+            <odometryFrame>odom</odometryFrame>
+            <odometryRate>20.0</odometryRate>
+            <robotBaseFrame>car_link</robotBaseFrame>
+        </plugin>
+    </gazebo-->
+
+</robot>

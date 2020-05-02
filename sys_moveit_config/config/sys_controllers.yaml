@@ -1,0 +1,18 @@
+sys_controller:
+  type: position_controllers/JointTrajectoryController
+  joints: 
+    - wx_agv2_1
+    - agv2_virx
+    - agv2_viry
+    - agv2_virz
+    - joint_a1
+    - joint_a2
+    - joint_a3
+    - joint_a4
+    - joint_a5
+    - joint_a6
+    - joint_a7
+    
+joint_state_controller:
+  type: joint_state_controller/JointStateController
+  publish_rate: 50

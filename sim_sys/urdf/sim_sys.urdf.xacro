@@ -1,0 +1,889 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://wiki.ros.org/xacro">
+  <xacro:macro name="sim_sys" params="prefix">
+  <xacro:property name="pi" value="3.1415926535897931" />
+  <xacro:macro name="cylinder_inertial" params="radius length mass *origin">
+    <inertial>
+      <mass value="${mass}" />
+      <xacro:insert_block name="origin" />
+      <inertia ixx="${0.0833333 * mass * (3 * radius * radius + length * length)}" ixy="0.0" ixz="0.0"
+        iyy="${0.0833333 * mass * (3 * radius * radius + length * length)}" iyz="0.0"
+        izz="${0.5 * mass * radius * radius}" />
+    </inertial>
+  </xacro:macro>
+    <xacro:macro name="default_inertial" params="mass">
+        <inertial>
+            <mass value="${mass}" />
+            <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0" />
+        </inertial>
+    </xacro:macro>
+        <link name="${prefix}wx">
+             <visual>
+                <geometry>
+                    <mesh filename="package://sim_sys/mesh/MZ.STL" />
+                </geometry>
+                <origin rpy="${pi/2} 0 0" xyz="0 0 0"/>
+            </visual>
+            <collision>
+                <geometry>
+                    <mesh filename="package://sim_sys/mesh/MZ.STL" />
+                </geometry>
+                <origin rpy="${pi/2} 0 0" xyz="0 0 0"/>
+            </collision>
+            <xacro:default_inertial mass="10"/>
+	      </link>
+        <gazebo reference="${prefix}wx">
+            <material>Gazebo/DarkGrey</material>
+            <mu1>0.5</mu1>
+            <mu2>0.5</mu2>
+        </gazebo>
+      <link name="${prefix}virtual_x_wx">
+        <inertial>
+            <mass value="1"/>
+            <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0" />
+        </inertial>
+      </link>
+      <link name="${prefix}virtual_y_wx">
+          <inertial>
+            <mass value="1"/>
+            <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0" />
+        </inertial>
+      </link>
+    <joint name="${prefix}wx_agv2_1" type="revolute">
+            <origin xyz="0.0 0.0 0.0" rpy="-${pi/4} 0.0 0.0"/>
+            <parent link="${prefix}wx"/>
+            <child link="${prefix}virtual_x_wx"/>
+            <axis xyz="1 0 0"/>
+            <limit lower="-${pi/10}" upper="${pi/2}" effort="50" velocity="1.0" />
+      </joint>
+      <joint name="${prefix}wx_agv2_2" type="fixed">
+            <origin xyz="0.0 0.0 0.0" rpy="${pi/4} 0.0 0.0"/>
+            <parent link="${prefix}virtual_x_wx"/>
+            <child link="${prefix}virtual_y_wx"/>
+      </joint>
+      <joint name="${prefix}virtual_agv2" type="fixed">
+            <origin xyz="0.0 0.0 -1" rpy="0.0 0.0 0.0"/>
+            <parent link="${prefix}virtual_y_wx"/>
+            <child link="${prefix}agv_link2"/>
+      </joint>
+
+
+
+
+    <link name="${prefix}agv_link2">
+        <inertial>
+            <mass value="50.0" />
+            <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0" />
+        </inertial>
+        <visual>
+            <origin xyz="0 0 0" rpy="0 0 0" />
+            <geometry>
+                <box size="1.2 0.7 0.36"/>  
+            </geometry>
+            <material name="hui">
+                <color rgba="0.752941176470588 0.752941176470588 0.752941176470588 1" />
+            </material>
+        </visual>
+        <collision>
+            <origin xyz="0 0 0" rpy="0 0 0" />
+            <geometry>
+                <box size="1.2 0.7 0.36"/>  
+            </geometry>
+        </collision>
+    </link> 
+
+    <!-- gazebo -->
+    <gazebo reference="${prefix}agv2_link">
+        <material>Gazebo/DarkGrey</material>
+        <mu1>0.5</mu1>
+        <mu2>0.5</mu2>
+    </gazebo>
+
+      <link name="${prefix}l_f_wheel2">
+            <visual>
+                <geometry>
+                    <mesh filename="package://sim_sys/mesh/wheel.STL" />
+                </geometry>
+            </visual>
+            <collision>
+                <geometry>
+                    <mesh filename="package://sim_sys/mesh/wheel.STL" />
+                </geometry>
+            </collision>
+            <inertial>
+                <mass value="1" />
+            <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0" />
+        </inertial>
+      </link>
+        <joint name="${prefix}lfjoint2" type="fixed">
+            <origin xyz="0.5 0.355 -0.15" rpy="1.5708 1.5708 0.0"/>
+            <parent link="${prefix}agv_link2"/>
+            <child link="${prefix}l_f_wheel2"/>
+        </joint>
+        <gazebo reference="${prefix}l_f_wheel2">
+          <material>Gazebo/DarkGrey</material>
+          <mu1>0.5</mu1>
+          <mu2>0.5</mu2>
+        </gazebo>
+
+        <link name="${prefix}r_f_wheel2">
+            <visual>
+                <geometry>
+                    <mesh filename="package://sim_sys/mesh/wheel.STL" />
+                </geometry>
+            </visual>
+            <collision>
+                <geometry>
+                    <mesh filename="package://sim_sys/mesh/wheel.STL" />
+                </geometry>
+            </collision>
+            <inertial>
+                <mass value="1" />
+            <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0" />
+        </inertial>
+      </link>
+        <joint name="${prefix}rfjoint2" type="fixed">
+            <origin xyz="-0.5 0.355 -0.15" rpy="1.5708 1.5708 0.0"/>
+            <parent link="${prefix}agv_link2"/>
+            <child link="${prefix}r_f_wheel2"/>
+        </joint>
+        <gazebo reference="${prefix}r_f_wheel2">
+          <material>Gazebo/DarkGrey</material>
+          <mu1>0.5</mu1>
+          <mu2>0.5</mu2>
+        </gazebo>
+
+        <link name="${prefix}l_b_wheel2">
+            <visual>
+                <geometry>
+                    <mesh filename="package://sim_sys/mesh/wheel.STL" />
+                </geometry>
+            </visual>
+            <collision>
+                <geometry>
+                    <mesh filename="package://sim_sys/mesh/wheel.STL" />
+                </geometry>
+            </collision>
+            <inertial>
+                <mass value="1" />
+            <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0" />
+        </inertial>
+      </link>
+        <joint name="${prefix}lbjoint2" type="fixed">
+            <origin xyz="0.5 -0.355 -0.15" rpy="1.5708 1.5708 0.0"/>
+            <parent link="${prefix}agv_link2"/>
+            <child link="${prefix}l_b_wheel2"/>
+        </joint>
+        <gazebo reference="${prefix}l_b_wheel2">
+          <material>Gazebo/DarkGrey</material>
+          <mu1>0.5</mu1>
+          <mu2>0.5</mu2>
+        </gazebo>
+
+        <link name="${prefix}r_b_wheel2">
+            <visual>
+                <geometry>
+                    <mesh filename="package://sim_sys/mesh/wheel.STL" />
+                </geometry>
+            </visual>
+            <collision>
+                <geometry>
+                    <mesh filename="package://sim_sys/mesh/wheel.STL" />
+                </geometry>
+            </collision>
+            <inertial>
+                <mass value="1" />
+            <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0" />
+        </inertial>
+      </link>
+        <joint name="${prefix}rbjoint2" type="fixed">
+            <origin xyz="-0.5 -0.355 -0.15" rpy="1.5708 1.5708 0.0"/>
+            <parent link="${prefix}agv_link2"/>
+            <child link="${prefix}r_b_wheel2"/>
+        </joint>
+        <gazebo reference="${prefix}r_b_wheel2">
+          <material>Gazebo/DarkGrey</material>
+          <mu1>0.5</mu1>
+          <mu2>0.5</mu2>
+        </gazebo>
+      <link name="${prefix}virtual_x">
+        <inertial>
+            <mass value="1"/>
+            <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0" />
+        </inertial>
+      </link>
+      <link name="${prefix}virtual_y">
+          <inertial>
+            <mass value="1"/>
+            <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0" />
+        </inertial>
+      </link>
+
+      <joint name="${prefix}agv2_virx" type="prismatic">
+            <origin xyz="3.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+            <parent link="${prefix}agv_link2"/>
+            <child link="${prefix}virtual_x"/>
+            <axis xyz="1 0 0"/>
+            <limit lower="-5" upper="5" effort="50" velocity="1.0" />
+      </joint>
+      <joint name="${prefix}agv2_viry" type="prismatic">
+            <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+            <parent link="${prefix}virtual_x"/>
+            <child link="${prefix}virtual_y"/>
+            <axis xyz="0 1 0"/>
+            <limit lower="-5" upper="5" effort="50" velocity="1.0" />
+      </joint>
+      <joint name="${prefix}agv2_virz" type="revolute">
+            <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+            <parent link="${prefix}virtual_y"/>
+            <child link="${prefix}agv_link"/>
+            <axis xyz="0 0 1"/>
+            <limit lower="-10" upper="10" effort="50" velocity="0.5" />
+      </joint>
+
+
+ <link
+    name="${prefix}agv_link">
+    <inertial>
+      <mass
+        value="50.0" />
+      <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <box size="1.2 0.7 0.36"/>  
+      </geometry>
+      <material
+        name="hui">
+        <color
+          rgba="0.752941176470588 0.752941176470588 0.752941176470588 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <box size="1.2 0.7 0.36"/>  
+      </geometry>
+    </collision>
+  </link> 
+
+    <!-- gazebo -->
+    <gazebo reference="${prefix}agv_link">
+        <material>Gazebo/DarkGrey</material>
+        <mu1>0.5</mu1>
+        <mu2>0.5</mu2>
+    </gazebo>
+
+      <link name="${prefix}l_f_wheel">
+            <visual>
+                <geometry>
+                    <mesh filename="package://sim_sys/mesh/wheel.STL" />
+                </geometry>
+            </visual>
+            <collision>
+                <geometry>
+                    <mesh filename="package://sim_sys/mesh/wheel.STL" />
+                </geometry>
+            </collision>
+            <inertial>
+                <mass value="1" />
+            <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0" />
+        </inertial>
+      </link>
+        <joint name="${prefix}lfjoint" type="fixed">
+            <origin xyz="0.5 0.355 -0.15" rpy="1.5708 1.5708 0.0"/>
+            <parent link="${prefix}agv_link"/>
+            <child link="${prefix}l_f_wheel"/>
+        </joint>
+        <gazebo reference="${prefix}l_f_wheel">
+          <material>Gazebo/DarkGrey</material>
+          <mu1>0.5</mu1>
+          <mu2>0.5</mu2>
+        </gazebo>
+
+        <link name="${prefix}r_f_wheel">
+            <visual>
+                <geometry>
+                    <mesh filename="package://sim_sys/mesh/wheel.STL" />
+                </geometry>
+            </visual>
+            <collision>
+                <geometry>
+                    <mesh filename="package://sim_sys/mesh/wheel.STL" />
+                </geometry>
+            </collision>
+            <inertial>
+                <mass value="1" />
+            <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0" />
+        </inertial>
+      </link>
+        <joint name="${prefix}rfjoint" type="fixed">
+            <origin xyz="-0.5 0.355 -0.15" rpy="1.5708 1.5708 0.0"/>
+            <parent link="${prefix}agv_link"/>
+            <child link="${prefix}r_f_wheel"/>
+        </joint>
+        <gazebo reference="${prefix}r_f_wheel">
+          <material>Gazebo/DarkGrey</material>
+          <mu1>0.5</mu1>
+          <mu2>0.5</mu2>
+        </gazebo>
+
+        <link name="${prefix}l_b_wheel">
+            <visual>
+                <geometry>
+                    <mesh filename="package://sim_sys/mesh/wheel.STL" />
+                </geometry>
+            </visual>
+            <collision>
+                <geometry>
+                    <mesh filename="package://sim_sys/mesh/wheel.STL" />
+                </geometry>
+            </collision>
+            <inertial>
+                <mass value="1" />
+            <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0" />
+        </inertial>
+      </link>
+        <joint name="${prefix}lbjoint" type="fixed">
+            <origin xyz="0.5 -0.355 -0.15" rpy="1.5708 1.5708 0.0"/>
+            <parent link="${prefix}agv_link"/>
+            <child link="${prefix}l_b_wheel"/>
+        </joint>
+        <gazebo reference="${prefix}l_b_wheel">
+          <material>Gazebo/DarkGrey</material>
+          <mu1>0.5</mu1>
+          <mu2>0.5</mu2>
+        </gazebo>
+
+        <link name="${prefix}r_b_wheel">
+            <visual>
+                <geometry>
+                    <mesh filename="package://sim_sys/mesh/wheel.STL" />
+                </geometry>
+            </visual>
+            <collision>
+                <geometry>
+                    <mesh filename="package://sim_sys/mesh/wheel.STL" />
+                </geometry>
+            </collision>
+            <inertial>
+                <mass value="1" />
+            <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0" />
+        </inertial>
+      </link>
+        <joint name="${prefix}rbjoint" type="fixed">
+            <origin xyz="-0.5 -0.355 -0.15" rpy="1.5708 1.5708 0.0"/>
+            <parent link="${prefix}agv_link"/>
+            <child link="${prefix}r_b_wheel"/>
+        </joint>
+        <gazebo reference="${prefix}r_b_wheel">
+          <material>Gazebo/DarkGrey</material>
+          <mu1>0.5</mu1>
+          <mu2>0.5</mu2>
+        </gazebo>
+
+
+
+
+  <joint
+    name="${prefix}agv_iiwa_joint"
+    type="fixed">
+    <origin
+      xyz="0 0 0.18"
+      rpy="0 0 0" />
+    <parent
+      link="${prefix}agv_link" />
+    <child
+      link="${prefix}base_link" />
+    <axis
+      xyz="0 0 0" />
+    <safety_controller
+      k_velocity="0" />
+  </joint>
+    <!-- link list -->
+    <link name="${prefix}base_link">
+      <visual>
+        <origin xyz="0 0 0" rpy="0 0 0" />
+        <geometry>
+          <mesh filename="package://sim_sys/mesh/lbr_iiwa_14_r820/visual/base_link.dae" />
+        </geometry>
+      </visual>
+      <collision>
+        <origin xyz="0 0 0" rpy="0 0 0" />
+        <geometry>
+          <mesh filename="package://sim_sys/mesh/lbr_iiwa_14_r820/collision/base_link.stl" />
+        </geometry>
+      </collision>
+      <xacro:cylinder_inertial radius="0.075" length="0.038" mass="0.5">
+        <origin xyz="0.0 0.0 0.0" rpy="0 0 0" />
+      </xacro:cylinder_inertial>
+    </link>
+    <link name="${prefix}link_1">
+      <visual>
+        <origin xyz="0 0 0" rpy="0 0 0" />
+        <geometry>
+          <mesh filename="package://sim_sys/mesh/lbr_iiwa_14_r820/visual/link_1.dae" />
+        </geometry>
+      </visual>
+      <collision>
+        <origin xyz="0 0 0" rpy="0 0 0" />
+        <geometry>
+          <mesh filename="package://sim_sys/mesh/lbr_iiwa_14_r820/collision/link_1.stl" />
+        </geometry>
+      </collision>
+      <xacro:cylinder_inertial radius="0.075" length="0.038" mass="0.5">
+        <origin xyz="0.0 0.0 0.0" rpy="0 0 0" />
+      </xacro:cylinder_inertial>
+    </link>
+    <link name="${prefix}link_2">
+      <visual>
+        <origin xyz="0 0 0" rpy="0 0 0" />
+        <geometry>
+          <mesh filename="package://sim_sys/mesh/lbr_iiwa_14_r820/visual/link_2.dae" />
+        </geometry>
+      </visual>
+      <collision>
+        <origin xyz="0 0 0" rpy="0 0 0" />
+        <geometry>
+          <mesh filename="package://sim_sys/mesh/lbr_iiwa_14_r820/collision/link_2.stl" />
+        </geometry>
+      </collision>
+      <xacro:cylinder_inertial radius="0.075" length="0.038" mass="0.5">
+        <origin xyz="0.0 0.0 0.0" rpy="0 0 0" />
+      </xacro:cylinder_inertial>
+    </link>
+    <link name="${prefix}link_3">
+      <visual>
+        <origin xyz="0 0 0" rpy="0 0 0" />
+        <geometry>
+          <mesh filename="package://sim_sys/mesh/lbr_iiwa_14_r820/visual/link_3.dae" />
+        </geometry>
+      </visual>
+      <collision>
+        <origin xyz="0 0 0" rpy="0 0 0" />
+        <geometry>
+          <mesh filename="package://sim_sys/mesh/lbr_iiwa_14_r820/collision/link_3.stl" />
+        </geometry>
+      </collision>
+      <xacro:cylinder_inertial radius="0.075" length="0.038" mass="0.5">
+        <origin xyz="0.0 0.0 0.0" rpy="0 0 0" />
+      </xacro:cylinder_inertial>
+    </link>
+    <link name="${prefix}link_4">
+      <visual>
+        <origin xyz="0 0 0" rpy="0 0 0" />
+        <geometry>
+          <mesh filename="package://sim_sys/mesh/lbr_iiwa_14_r820/visual/link_4.dae" />
+        </geometry>
+      </visual>
+      <collision>
+        <origin xyz="0 0 0" rpy="0 0 0" />
+        <geometry>
+          <mesh filename="package://sim_sys/mesh/lbr_iiwa_14_r820/collision/link_4.stl" />
+        </geometry>
+      </collision>
+      <xacro:cylinder_inertial radius="0.075" length="0.038" mass="0.5">
+        <origin xyz="0.0 0.0 0.0" rpy="0 0 0" />
+      </xacro:cylinder_inertial>
+    </link>
+    <link name="${prefix}link_5">
+      <visual>
+        <origin xyz="0 0 0" rpy="0 0 0" />
+        <geometry>
+          <mesh filename="package://sim_sys/mesh/lbr_iiwa_14_r820/visual/link_5.dae" />
+        </geometry>
+      </visual>
+      <collision>
+        <origin xyz="0 0 0" rpy="0 0 0" />
+        <geometry>
+          <mesh filename="package://sim_sys/mesh/lbr_iiwa_14_r820/collision/link_5.stl" />
+        </geometry>
+      </collision>
+      <xacro:cylinder_inertial radius="0.075" length="0.038" mass="0.5">
+        <origin xyz="0.0 0.0 0.0" rpy="0 0 0" />
+      </xacro:cylinder_inertial>
+    </link>
+    <link name="${prefix}link_6">
+      <visual>
+        <origin xyz="0 0 0" rpy="0 0 0" />
+        <geometry>
+          <mesh filename="package://sim_sys/mesh/lbr_iiwa_14_r820/visual/link_6.dae" />
+        </geometry>
+      </visual>
+      <collision>
+        <origin xyz="0 0 0" rpy="0 0 0" />
+        <geometry>
+          <mesh filename="package://sim_sys/mesh/lbr_iiwa_14_r820/collision/link_6.stl" />
+        </geometry>
+      </collision>
+      <xacro:cylinder_inertial radius="0.075" length="0.038" mass="0.5">
+        <origin xyz="0.0 0.0 0.0" rpy="0 0 0" />
+      </xacro:cylinder_inertial>
+    </link>
+    <link name="${prefix}link_7">
+      <visual>
+        <origin xyz="0 0 0" rpy="0 0 0" />
+        <geometry>
+          <mesh filename="package://sim_sys/mesh/lbr_iiwa_14_r820/visual/link_7.dae" />
+        </geometry>
+      </visual>
+      <collision>
+        <origin xyz="0 0 0" rpy="0 0 0" />
+        <geometry>
+          <mesh filename="package://sim_sys/mesh/lbr_iiwa_14_r820/collision/link_7.stl" />
+        </geometry>
+      </collision>
+      <xacro:cylinder_inertial radius="0.075" length="0.038" mass="0.5">
+        <origin xyz="0.0 0.0 0.0" rpy="0 0 0" />
+      </xacro:cylinder_inertial>
+    </link>
+    <link name="${prefix}tool0" />
+    <!-- end of link list -->
+
+    <!-- joint list -->
+    <joint name="${prefix}joint_a1" type="revolute">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <parent link="${prefix}base_link" />
+      <child link="${prefix}link_1" />
+      <axis xyz="0 0 1" />
+      <limit lower="-2.9668" upper="2.9668" effort="50" velocity="1.4834" />
+    </joint>
+    <joint name="${prefix}joint_a2" type="revolute">
+      <origin xyz="-0.00043624 0 0.36" rpy="0 0 0" />
+      <parent link="${prefix}link_1" />
+      <child link="${prefix}link_2" />
+      <axis xyz="0 1 0" />
+      <limit lower="-2.0942" upper="2.0942" effort="50" velocity="1.4834" />
+    </joint>
+    <joint name="${prefix}joint_a3" type="revolute">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <parent link="${prefix}link_2" />
+      <child link="${prefix}link_3" />
+      <axis xyz="0 0 1" />
+      <limit lower="-2.9668" upper="2.9668" effort="50" velocity="1.7452" />
+    </joint>
+    <joint name="${prefix}joint_a4" type="revolute">
+      <origin xyz="0.00043624 0 0.42" rpy="0 0 0" />
+      <parent link="${prefix}link_3" />
+      <child link="${prefix}link_4" />
+      <axis xyz="0 -1 0" />
+      <limit lower="-2.0942" upper="2.0942" effort="50" velocity="1.3089" />
+    </joint>
+    <joint name="${prefix}joint_a5" type="revolute">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <parent link="${prefix}link_4" />
+      <child link="${prefix}link_5" />
+      <axis xyz="0 0 1" />
+      <limit lower="-2.9668" upper="2.9668" effort="50" velocity="2.2688" />
+    </joint>
+    <joint name="${prefix}joint_a6" type="revolute">
+      <origin xyz="0 0 0.4" rpy="0 0 0" />
+      <parent link="${prefix}link_5" />
+      <child link="${prefix}link_6" />
+      <axis xyz="0 1 0" />
+      <limit lower="-2.0942" upper="2.0942" effort="50" velocity="2.356" />
+    </joint>
+    <joint name="${prefix}joint_a7" type="revolute">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <parent link="${prefix}link_6" />
+      <child link="${prefix}link_7" />
+      <axis xyz="0 0 1" />
+      <limit lower="-3.0541" upper="3.0541" effort="50" velocity="2.356" />
+    </joint>
+    <joint name="${prefix}joint_a7-tool0" type="fixed">
+      <origin xyz="0 0 0.126" rpy="0 0 0" />
+      <parent link="${prefix}link_7" />
+      <child link="${prefix}tool0" />
+      <axis xyz="0 0 0" />
+    </joint>
+    <!-- end of joint list -->
+
+    <joint name="${prefix}pan_joint" type="fixed">
+      <parent link="${prefix}link_7" />
+      <child link = "${prefix}pan_link" />
+      <origin xyz="0.0 0.0 0.12" rpy="1.5708 0.0 0.0" />
+      <axis xyz="0 1 0" />
+      <dynamics damping="0.0" friction="0.0"/>
+    </joint>
+
+    <link name="${prefix}pan_link">
+      <visual>
+        <geometry>
+          <mesh filename="package://sim_sys/mesh/pan.STL"/>
+        </geometry>
+        <material name="black">
+          <color rgba="0.4 0.5 0.4 1.0"/>
+        </material>
+      </visual>
+      <collision>
+        <geometry>
+          <mesh filename="package://sim_sys/mesh/pan.STL"/>
+        </geometry>
+      </collision>
+      <xacro:cylinder_inertial radius="0.05" length="0.01" mass="0.01">
+        <origin xyz="0.0 0.0 0.0" rpy="0 0 0" />
+      </xacro:cylinder_inertial>
+    </link>
+
+    <joint name="${prefix}xiao_arm1_joint" type="fixed">
+      <parent link="${prefix}pan_link" />
+      <child link = "${prefix}xiao_arm1_link" />
+      <origin xyz="0.0 0.0 -0.47" rpy="0.0 0.0 0.0" />
+      <axis xyz="0 1 0" />
+      <dynamics damping="0.0" friction="0.0"/>
+    </joint>
+
+    <link name="${prefix}xiao_arm1_link">
+      <visual>
+        <geometry>
+          <mesh filename="package://sim_sys/mesh/xiao_arm.STL"/>
+        </geometry>
+        <material name="black1">
+          <color rgba="0.3 0.5 0.7 1.0"/>
+        </material>
+      </visual>
+      <collision>
+        <geometry>
+          <mesh filename="package://sim_sys/mesh/xiao_arm.STL"/>
+        </geometry>
+      </collision>
+      <xacro:cylinder_inertial radius="0.05" length="0.01" mass="0.01">
+        <origin xyz="0.0 0.0 0.0" rpy="0 0 0" />
+      </xacro:cylinder_inertial>
+    </link>
+
+    <joint name="${prefix}xiao_arm2_joint" type="fixed">
+      <parent link="${prefix}pan_link" />
+      <child link = "${prefix}xiao_arm2_link" />
+      <origin xyz="-0.15 0.0 -0.47" rpy="0.0 0.0 0.0" />
+      <axis xyz="0 1 0" />
+      <dynamics damping="0.0" friction="0.0"/>
+    </joint>
+
+    <link name="${prefix}xiao_arm2_link">
+      <visual>
+        <geometry>
+          <mesh filename="package://sim_sys/mesh/xiao_arm.STL"/>
+        </geometry>
+        <material name="white1">
+          <color rgba="1.0 0.7 1.0 1.0"/>
+        </material>
+      </visual>
+      <collision>
+        <geometry>
+          <mesh filename="package://sim_sys/mesh/xiao_arm.STL"/>
+        </geometry>
+      </collision>
+      <xacro:cylinder_inertial radius="0.05" length="0.01" mass="0.01">
+        <origin xyz="0.0 0.0 0.0" rpy="0 0 0" />
+      </xacro:cylinder_inertial>
+    </link>
+
+    <joint name="${prefix}xiangji_joint" type="fixed">
+      <parent link="${prefix}pan_link" />
+      <child link = "${prefix}xiangji_link" />
+      <origin xyz="0.0 0.065 -0.1" rpy="-1.570796 0.0 0.0" />
+      <axis xyz="0 1 0" />
+      <dynamics damping="0.0" friction="0.0"/>
+    </joint>
+
+    <link name="${prefix}xiangji_link">
+      <visual>
+        <geometry>
+          <mesh filename="package://sim_sys/mesh/xiangji.STL"/>
+        </geometry>
+        <material name="white2">
+          <color rgba="0.4 0.7 0.2 1.0"/>
+        </material>
+      </visual>
+      <collision>
+        <geometry>
+          <mesh filename="package://sim_sys/mesh/xiao_arm.STL"/>
+        </geometry>
+      </collision>
+      <xacro:cylinder_inertial radius="0.05" length="0.01" mass="0.01">
+        <origin xyz="0.0 0.0 0.0" rpy="0 0 0" />
+      </xacro:cylinder_inertial>
+    </link>
+    <!-- ROS base_link to KUKA $ROBROOT coordinate system transform -->
+    <link name="${prefix}base" />
+    <joint name="${prefix}base_link-base" type="fixed">
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <parent link="${prefix}base_link"/>
+      <child link="${prefix}base"/>
+    </joint>
+
+    <gazebo reference="${prefix}link_1">
+        <material>Gazebo/Yellow</material>
+        <mu1>0.5</mu1>
+        <mu2>0.5</mu2>
+    </gazebo>
+    <gazebo reference="${prefix}link_2">
+        <material>Gazebo/Red</material>
+        <mu1>0.5</mu1>
+        <mu2>0.5</mu2>
+    </gazebo>
+    <gazebo reference="${prefix}link_3">
+        <material>Gazebo/Orange</material>
+        <mu1>0.5</mu1>
+        <mu2>0.5</mu2>
+    </gazebo>
+    <gazebo reference="${prefix}link_4">
+        <material>Gazebo/Grey</material>
+        <mu1>0.5</mu1>
+        <mu2>0.5</mu2>
+    </gazebo>
+    <gazebo reference="${prefix}link_5">
+        <material>Gazebo/Green</material>
+        <mu1>0.5</mu1>
+        <mu2>0.5</mu2>
+    </gazebo>
+    <gazebo reference="${prefix}link_6">
+        <material>Gazebo/Blue</material>
+        <mu1>0.5</mu1>
+        <mu2>0.5</mu2>
+    </gazebo>
+    <gazebo reference="${prefix}link_7">
+        <material>Gazebo/Yellow</material>
+        <mu1>0.5</mu1>
+        <mu2>0.5</mu2>
+    </gazebo>
+    <gazebo reference="${prefix}xiangji_link">
+        <material>Gazebo/Black</material>
+        <mu1>0.5</mu1>
+        <mu2>0.5</mu2>
+    </gazebo>
+    <gazebo reference="${prefix}xiao_arm2_link">
+        <material>Gazebo/Grey</material>
+        <mu1>0.5</mu1>
+        <mu2>0.5</mu2>
+    </gazebo>
+    <gazebo reference="${prefix}xiao_arm1_link">
+        <material>Gazebo/Grey</material>
+        <mu1>0.5</mu1>
+        <mu2>0.5</mu2>
+    </gazebo>
+    <transmission name="trans01">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="${prefix}wx_agv2_1">
+      <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="motor01">
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
+  <transmission name="trans02">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="${prefix}agv2_virx">
+      <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="motor02">
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
+  <transmission name="trans03">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="${prefix}agv2_viry">
+      <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="motor03">
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
+  <transmission name="trans04">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="${prefix}agv2_virz">
+      <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="motor04">
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
+  <transmission name="trans1">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="${prefix}joint_a1">
+      <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="motor1">
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
+  <transmission name="trans2">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="${prefix}joint_a2">
+      <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="motor2">
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
+  <transmission name="trans3">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="${prefix}joint_a3">
+      <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="motor3">
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
+  <transmission name="trans4">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="${prefix}joint_a4">
+      <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="motor4">
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
+  <transmission name="trans5">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="${prefix}joint_a5">
+      <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="motor5">
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
+  <transmission name="trans6">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="${prefix}joint_a6">
+      <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="motor6">
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
+  <transmission name="trans7">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="${prefix}joint_a7">
+      <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="motor7">
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
+  </xacro:macro>
+  <gazebo>
+    <plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so">
+      <robotNamespace>/</robotNamespace>
+      <robotSimType>gazebo_ros_control/DefaultRobotHWSim</robotSimType>
+      <legacyModeNS>true</legacyModeNS>
+    </plugin>
+  </gazebo>
+<!--move_base plugin -->
+  <!--gazebo>
+    <plugin name="base_controller" filename="libgazebo_ros_planar_move.so">
+      <commandTopic>cmd_vel</commandTopic>
+      <odometryTopic>odom</odometryTopic>
+      <odometryFrame>odom</odometryFrame>
+      <odometryRate>20.0</odometryRate>
+      <robotBaseFrame>base_link</robotBaseFrame>
+    </plugin>
+  </gazebo-->
+</robot>
+

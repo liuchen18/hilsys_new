@@ -1,0 +1,93 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+    <!-- include xacro files -->
+    <xacro:include filename="$(find parallel_car)/urdf/support.transmission.xacro"/>
+    
+    <!-- initial position -->
+    <xacro:property name="initial_x" value="0.0"/>
+    <xacro:property name="initial_y" value="-1.5"/>
+
+    <!--links-->
+
+    <link name="world"/>
+
+    <link name="world_medium_link">
+        <inertial>
+            <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+            <mass value="${little_mass}"/>
+            <inertia ixx="${little_mass}" ixy="0.0" ixz="0.0" iyy="${little_mass}" iyz="0.0" izz="${little_mass}"/>
+        </inertial>
+        <visual>
+            <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+            <geometry>
+                <box size="${little_width} ${little_width} ${little_width}"/>
+            </geometry>
+        </visual>
+    </link>
+
+    <link name="supportX_link">
+        <inertial>
+            <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+            <mass value="${little_mass}"/>
+            <inertia ixx="${little_mass}" ixy="0.0" ixz="0.0" iyy="${little_mass}" iyz="0.0" izz="${little_mass}"/>
+        </inertial>
+        <visual>
+            <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+            <geometry>
+                <box size="${little_width} ${little_width} ${little_width}"/>
+            </geometry>
+        </visual>
+    </link>
+
+    <link name="supportY_link">
+        <inertial>
+            <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+            <mass value="${little_mass}"/>
+            <inertia ixx="${little_mass}" ixy="0.0" ixz="0.0" iyy="${little_mass}" iyz="0.0" izz="${little_mass}"/>
+        </inertial>
+        <visual>
+            <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+            <geometry>
+                <box size="${little_width} ${little_width} ${little_width}"/>
+            </geometry>
+        </visual>
+    </link>
+
+    <!-- links end-->
+
+    <!-- joints -->
+
+    <joint name="world_to_world_medium" type="fixed">
+        <origin xyz="${initial_x} ${initial_y} 0.0" rpy="0.0 0.0 0.0"/>
+        <parent link="world"/>
+        <child link="world_medium_link"/>
+    </joint>
+
+    <joint name="world_medium_to_supportX" type="prismatic">
+        <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+        <parent link="world_medium_link"/>
+        <child link="supportX_link"/>
+        <axis xyz="1.0 0.0 0.0"/>
+        <limit lower="-10.0" upper="10.0" effort="100.0" velocity="5.0"/>
+    </joint>
+
+    <joint name="supportX_to_supportY" type="prismatic">
+        <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+        <parent link="supportX_link"/>
+        <child link="supportY_link"/>
+        <axis xyz="0.0 1.0 0.0"/>
+        <limit lower="-10.0" upper="10.0" effort="100.0" velocity="5.0"/>
+    </joint>
+
+    <joint name="supportY_to_car" type="continuous">
+        <origin xyz="0.0 0.0 ${car_height/2.0}" rpy="0.0 0.0 0.0"/>
+        <parent link="supportY_link"/>
+        <child link="car_link"/>
+        <axis xyz="0.0 0.0 1.0"/>
+        <limit lower="-10.0" upper="10.0" effort="100.0" velocity="5.0"/>
+    </joint>
+
+    <!-- joints end-->
+
+</robot>

@@ -1,0 +1,356 @@
+<?xml version="1.0"?>
+<robot name="parallel_car" xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+    <!-- include xacro files -->
+    <xacro:include filename="$(find parallel_car)/urdf/parallel_car.gazebo.xacro"/>
+    <xacro:include filename="$(find parallel_car)/urdf/parallel_car.transmission.xacro"/>
+    <xacro:include filename="$(find parallel_car)/urdf/materials.xacro"/>
+    <xacro:include filename="$(find parallel_car)/urdf/sub_link.urdf.xacro"/>
+    
+    <!--xacro properties-->
+    <xacro:property name="car_mass" value="20.0"/>
+    <xacro:property name="car_offset" value="0.23"/>
+    <xacro:property name="wx_mass" value="5.0"/>
+    <xacro:property name="PI" value="3.1415926536"/>
+    <xacro:property name="bar_length" value="0.4"/>
+    <xacro:property name="bar_width" value="0.05"/>
+    <xacro:property name="little_width" value="0.001"/>
+    <xacro:property name="wx_length" value="0.55"/>
+    <xacro:property name="down_radius" value="0.21"/>
+    <xacro:property name="down_height" value="0.075"/>
+    <xacro:property name="up_radius" value="0.125"/>
+    <xacro:property name="up_height" value="0.05"/>
+    <xacro:property name="little_mass" value="0.01"/>
+    <xacro:property name="addon_length" value="0.4"/>
+    <xacro:property name="addon_width" value="0.01"/>
+    <xacro:property name="car_height" value="0.36"/>
+
+    <!-- inlcude support xacro files -->
+    <!-- need to use some xacro properties little_width, little_mass, so include them here-->
+    <xacro:include filename="$(find parallel_car)/urdf/support.urdf.xacro"/>
+
+    <!-- links -->
+    <link name="car_link"><!--from origin to top-->
+        <visual>
+            <geometry>
+                <box size="1 0.5 ${car_height}"/>
+     	    </geometry>
+            <material name="green"/>
+            <origin rpy="0.0 0.0 0.0" xyz="0 0 0.0"/>
+        </visual>
+        <collision>
+            <geometry>
+                <box size="1 0.5 0.36"/>
+     	    </geometry>
+            <origin rpy="0.0 0.0 0.0" xyz="0 0 0.0"/>
+        </collision>
+        <inertial>
+            <mass value="${car_mass}"/>
+            <inertia ixx="${car_mass}" ixy="0.0" ixz="0.0" iyy="${car_mass}" iyz="0.0" izz="${car_mass}" />
+        </inertial>
+    </link>
+
+    <link name="barX_link">
+        <inertial>
+            <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+            <mass value="${little_mass}"/>
+            <inertia ixx="${little_mass}" ixy="0.0" ixz="0.0" iyy="${little_mass}" iyz="0.0" izz="${little_mass}"/>
+        </inertial>
+        <visual>
+            <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+            <geometry>
+                <box size="${bar_length} ${bar_width} ${bar_width}"/>
+            </geometry>
+            <material name="blue"/>
+        </visual>
+    </link>
+
+    <link name="barY_link">
+        <inertial>
+            <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+            <mass value="${little_mass}"/>
+            <inertia ixx="${little_mass}" ixy="0.0" ixz="0.0" iyy="${little_mass}" iyz="0.0" izz="${little_mass}"/>
+        </inertial>
+        <visual>
+            <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+            <geometry>
+                <box size="${bar_width} ${bar_length} ${bar_width}"/>
+            </geometry>
+            <material name="red"/>
+        </visual>
+    </link>
+
+    <link name="barZ_link">
+        <inertial>
+            <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+            <mass value="${little_mass}"/>
+            <inertia ixx="${little_mass}" ixy="0.0" ixz="0.0" iyy="${little_mass}" iyz="0.0" izz="${little_mass}"/>
+        </inertial>
+        <visual>
+            <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+            <geometry>
+                <box size="${bar_width} ${bar_width} ${bar_length}"/>
+            </geometry>
+            <material name="yellow"/>
+        </visual>
+    </link>
+
+    <link name="littleX_link">
+        <inertial>
+            <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+            <mass value="${little_mass}"/>
+            <inertia ixx="${little_mass}" ixy="0.0" ixz="0.0" iyy="${little_mass}" iyz="0.0" izz="${little_mass}"/>
+        </inertial>
+        <visual>
+            <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+            <geometry>
+                <box size="${little_width} ${little_width} ${little_width}"/>
+            </geometry>
+        </visual>
+    </link>
+
+    <link name="littleY_link">
+        <inertial>
+            <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+            <mass value="${little_mass}"/>
+            <inertia ixx="${little_mass}" ixy="0.0" ixz="0.0" iyy="${little_mass}" iyz="0.0" izz="${little_mass}"/>
+        </inertial>
+        <visual>
+            <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+            <geometry>
+                <box size="${little_width} ${little_width} ${little_width}"/>
+            </geometry>
+        </visual>
+    </link>
+
+    <link name="littleZ_link">
+        <inertial>
+            <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+            <mass value="${little_mass}"/>
+            <inertia ixx="${little_mass}" ixy="0.0" ixz="0.0" iyy="${little_mass}" iyz="0.0" izz="${little_mass}"/>
+        </inertial>
+        <visual>
+            <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+            <geometry>
+                <box size="${little_width} ${little_width} ${little_width}"/>
+            </geometry>
+        </visual>
+    </link>
+
+    <link name="wx_visual_link">
+        <inertial>
+            <origin xyz="0.03 0.0 0.23" rpy="0.0 0.0 0.0"/>
+            <mass value="${wx_mass}"/>
+            <inertia ixx="${wx_mass}" ixy="0.0" ixz="0.0" iyy="${wx_mass}" iyz="0.0" izz="${wx_mass}"/>
+        </inertial>
+        <visual>
+            <origin xyz="0.05 0.0 0.25" rpy="${3.0*PI/4.0} 0.0 ${-PI/2.0}"/>
+            <geometry>
+                <mesh filename="package://parallel_car/meshes/MZ.STL" />
+            </geometry>
+            <material name="white"/>
+        </visual>
+        <collision>
+            <origin xyz="0.05 0.0 0.25" rpy="0.0 0.0 0.0"/>
+            <geometry>
+                <mesh filename="package://parallel_car/meshes/MZ.STL" />
+            </geometry>
+        </collision>
+    </link>
+
+    <link name="wx_medium_link">
+        <inertial>
+            <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+            <mass value="${little_mass}"/>
+            <inertia ixx="${little_mass}" ixy="0.0" ixz="0.0" iyy="${little_mass}" iyz="0.0" izz="${little_mass}"/>
+        </inertial>
+        <visual>
+            <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+            <geometry>
+                <box size="${little_width} ${little_width} ${little_width}"/>
+            </geometry>
+        </visual>
+    </link>
+
+    <link name="wx_link">
+        <inertial>
+            <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+            <mass value="${little_mass}"/>
+            <inertia ixx="${little_mass}" ixy="0.0" ixz="0.0" iyy="${little_mass}" iyz="0.0" izz="${little_mass}"/>
+        </inertial>
+        <visual>
+            <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+            <geometry>
+                <box size="${little_width} ${little_width} ${little_width}"/>
+            </geometry>
+        </visual>
+    </link>
+
+    <!-- up and down links -->
+
+    <link name="down_link">
+        <inertial>
+            <origin xyz="0.0 0.0 0.0" rpy="${PI/2.0} 0.0 ${PI/2.0}"/>
+            <mass value="0.5"/>
+            <inertia ixx="0.5" ixy="0.0" ixz="0.0" iyy="0.5" iyz="0.0" izz="0.5"/>
+        </inertial>
+        <visual>
+            <origin xyz="0.0 0.0 0.0" rpy="${PI/2.0} 0.0 ${PI/2.0}"/>
+            <geometry>
+                <mesh filename="package://parallel_car/meshes/platform_down.STL" />
+            </geometry>
+            <material name="grey"/>
+        </visual>
+        <collision>
+            <origin xyz="0.0 0.0 0.0" rpy="${PI/2.0} 0.0 ${PI/2.0}"/>
+            <geometry>
+                <mesh filename="package://parallel_car/meshes/platform_down.STL" />
+            </geometry>
+        </collision>
+    </link>
+
+    <link name="up_link">
+        <inertial>
+            <origin xyz="0.0 0.0 0.0" rpy="${-PI/2.0} 0.0 ${-PI/6.0}"/>
+            <mass value="0.3"/>
+            <inertia ixx="0.3" ixy="0.0" ixz="0.0" iyy="0.3" iyz="0.0" izz="0.3"/>
+        </inertial>
+        <visual>
+            <origin xyz="0.0 0.0 0.0" rpy="${-PI/2.0} 0.0 ${-PI/6.0}"/>
+            <geometry>
+                <mesh filename="package://parallel_car/meshes/platform_up.STL" />
+            </geometry>
+            <material name="orange"/>
+        </visual>
+        <collision>
+            <origin xyz="0.0 0.0 0.0" rpy="${-PI/2.0} 0.0 ${-PI/6.0}"/>
+            <geometry>
+                <mesh filename="package://parallel_car/meshes/platform_up.STL" />
+            </geometry>
+        </collision>
+    </link>
+
+    <!-- addon links for support of wx_link -->
+
+    <link name="addon_Vertical_link">
+        <inertial>
+            <origin xyz="0.0 0.0 ${addon_length/2.0}" rpy="0.0 0.0 0.0"/>
+            <mass value="${little_mass}"/>
+            <inertia ixx="${little_mass}" ixy="0.0" ixz="0.0" iyy="${little_mass}" iyz="0.0" izz="${little_mass}"/>
+        </inertial>
+        <visual>
+            <origin xyz="0.0 0.0 ${addon_length/2.0}" rpy="0.0 0.0 0.0"/>
+            <geometry>
+                <box size="${addon_width} ${addon_width} ${addon_length}"/>
+            </geometry>
+            <material name="purple"/>
+        </visual>
+    </link>
+
+
+    <!-- joints -->
+
+    <joint name="car_to_barX" type="prismatic">
+        <origin xyz="0.0 0.0 0.18" rpy="0.0 0.0 0.0"/>
+        <parent link="car_link"/>
+        <child link="barX_link"/>
+        <axis xyz="1.0 0.0 0.0"/>
+        <limit lower="-1.0" upper="1.0" effort="50.0" velocity="2.0"/>
+    </joint>
+
+    <joint name="barX_to_barY" type="prismatic">
+        <origin xyz="0.0 0.0 ${bar_width}" rpy="0.0 0.0 0.0"/>
+        <parent link="barX_link"/>
+        <child link="barY_link"/>
+        <axis xyz="0.0 1.0 0.0"/>
+        <limit lower="-1.0" upper="1.0" effort="50.0" velocity="2.0"/>
+    </joint>
+
+    <joint name="barY_to_barZ" type="prismatic">
+        <origin xyz="0.0 0.0 ${(bar_length+bar_width)/2.0}" rpy="0.0 0.0 0.0"/>
+        <parent link="barY_link"/>
+        <child link="barZ_link"/>
+        <axis xyz="0.0 0.0 1.0"/>
+        <limit lower="-1.0" upper="1.0" effort="80.0" velocity="2.0"/>
+    </joint>
+
+    <joint name="barZ_to_littleX" type="revolute">
+        <origin xyz="0.0 0.0 ${bar_length/2.0}" rpy="0.0 0.0 0.0"/>
+        <parent link="barZ_link"/>
+        <child link="littleX_link"/>
+        <axis xyz="1.0 0.0 0.0"/>
+        <limit lower="${-PI/2.0}" upper="${PI/2.0}" effort="50.0" velocity="2.0"/>
+    </joint>
+
+    <joint name="littleX_to_littleY" type="revolute">
+        <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+        <parent link="littleX_link"/>
+        <child link="littleY_link"/>
+        <axis xyz="0.0 1.0 0.0"/>
+        <limit lower="${-PI/2.0}" upper="${PI/2.0}" effort="50.0" velocity="2.0"/>
+    </joint>
+
+    <joint name="littleY_to_littleZ" type="revolute">
+        <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+        <parent link="littleY_link"/>
+        <child link="littleZ_link"/>
+        <axis xyz="0.0 0.0 1.0"/>
+        <limit lower="${-PI/2.0}" upper="${PI/2.0}" effort="50.0" velocity="2.0"/>
+    </joint>
+
+    <joint name="addon_Vertical_to_wx_visual" type="fixed">
+        <origin xyz="0.0 0.0 ${addon_length}" rpy="0.0 0.0 0.0"/>
+        <parent link="addon_Vertical_link"/>
+        <child link="wx_visual_link"/>
+    </joint>
+
+    <joint name="wx_visual_to_wx_medium" type="fixed">
+        <origin xyz="0.03 0.0 0.23" rpy="0.0 ${PI/4.0} 0.0"/>
+        <parent link="wx_visual_link"/>
+        <child link="wx_medium_link"/>
+    </joint>
+
+    <joint name="wx_medium_to_wx" type="fixed">
+        <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 ${-PI/2.0}"/>
+        <parent link="wx_medium_link"/>
+        <child link="wx_link"/>
+    </joint>
+
+    <!-- up and down joints -->
+
+    <joint name="car_to_down" type="fixed">
+        <origin xyz="0.0 0.0 0.18" rpy="0.0 0.0 0.0"/>
+        <parent link="car_link"/>
+        <child link="down_link"/>
+    </joint>
+
+    <joint name="littleZ_to_up" type="fixed">
+        <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+        <parent link="littleZ_link"/>
+        <child link="up_link"/>
+    </joint>
+
+    <!-- spawn the sub links and joints-->
+    <xacro:sub_link_joint parent_link="down_link" child_link="down_1" height="${down_height}" radius="${down_radius}" beta="10.0" little_width="${little_width}" little_mass="${little_mass}" />
+    <xacro:sub_link_joint parent_link="down_link" child_link="down_2" height="${down_height}" radius="${down_radius}" beta="110.0" little_width="${little_width}" little_mass="${little_mass}" />
+    <xacro:sub_link_joint parent_link="down_link" child_link="down_3" height="${down_height}" radius="${down_radius}" beta="130.0" little_width="${little_width}" little_mass="${little_mass}" />
+    <xacro:sub_link_joint parent_link="down_link" child_link="down_4" height="${down_height}" radius="${down_radius}" beta="230.0" little_width="${little_width}" little_mass="${little_mass}" />
+    <xacro:sub_link_joint parent_link="down_link" child_link="down_5" height="${down_height}" radius="${down_radius}" beta="250.0" little_width="${little_width}" little_mass="${little_mass}" />
+    <xacro:sub_link_joint parent_link="down_link" child_link="down_6" height="${down_height}" radius="${down_radius}" beta="350.0" little_width="${little_width}" little_mass="${little_mass}" />
+
+    <xacro:sub_link_joint parent_link="up_link" child_link="up_1" height="${up_height}" radius="${up_radius}" beta="50.0" little_width="${little_width}" little_mass="${little_mass}" />
+    <xacro:sub_link_joint parent_link="up_link" child_link="up_2" height="${up_height}" radius="${up_radius}" beta="70.0" little_width="${little_width}" little_mass="${little_mass}" />
+    <xacro:sub_link_joint parent_link="up_link" child_link="up_3" height="${up_height}" radius="${up_radius}" beta="170.0" little_width="${little_width}" little_mass="${little_mass}" />
+    <xacro:sub_link_joint parent_link="up_link" child_link="up_4" height="${up_height}" radius="${up_radius}" beta="190.0" little_width="${little_width}" little_mass="${little_mass}" />
+    <xacro:sub_link_joint parent_link="up_link" child_link="up_5" height="${up_height}" radius="${up_radius}" beta="290.0" little_width="${little_width}" little_mass="${little_mass}" />
+    <xacro:sub_link_joint parent_link="up_link" child_link="up_6" height="${up_height}" radius="${up_radius}" beta="310.0" little_width="${little_width}" little_mass="${little_mass}" />
+
+    <!--addon joints-->
+    <joint name="littleZ_to_addon_Vertical" type="fixed">
+        <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+        <parent link="littleZ_link"/>
+        <child link="addon_Vertical_link"/>
+    </joint>
+
+
+</robot>

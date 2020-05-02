@@ -1,0 +1,45 @@
+/iiwa:
+    joint_state_controller:
+      type: "joint_state_controller/JointStateController"
+      publish_rate: 50
+  
+    iiwa_controller:
+      type: position_controllers/JointTrajectoryController
+      joints:
+        - base_x
+        - x_y
+        - y_car
+        - joint_a1
+        - joint_a2
+        - joint_a3
+        - joint_a4
+        - joint_a5
+        - joint_a6
+        - joint_a7
+      constraints:
+        goal_time: 0.6
+        stopped_velocity_tolerance: 0.1
+        base_x: {trajectory: &traj_tol 0.05, goal: &goal_tol 0.05}
+        x_y: {trajectory: *traj_tol, goal: *goal_tol}
+        y_car: {trajectory: *traj_tol, goal: *goal_tol}
+        joint_a1: {trajectory: *traj_tol, goal: *goal_tol}
+        joint_a2: {trajectory: *traj_tol, goal: *goal_tol}
+        joint_a3: {trajectory: *traj_tol, goal: *goal_tol}
+        joint_a4: {trajectory: *traj_tol, goal: *goal_tol}
+        joint_a5: {trajectory: *traj_tol, goal: *goal_tol}
+        joint_a6: {trajectory: *traj_tol, goal: *goal_tol}
+        joint_a7: {trajectory: *traj_tol, goal: *goal_tol}
+      stop_trajectory_duration: 0.5
+      state_publish_rate:  50
+      action_monitor_rate: 20
+      gains:
+        base_x: {p: 10.0, i: 1, d: 1.0}
+        x_y: {p: 10.0, i: 1, d: 1.0}
+        y_car: {p: 10.0, i: 1, d: 1.0}
+        joint_a1: {p: 10.0, i: 1, d: 1.0}
+        joint_a2: {p: 10.0, i: 1, d: 1.0}
+        joint_a3: {p: 10.0, i: 1, d: 1.0}
+        joint_a4: {p: 10.0, i: 1, d: 1.0}
+        joint_a5: {p: 10.0, i: 1, d: 1.0}
+        joint_a6: {p: 10.0, i: 1, d: 1.0}
+        joint_a7: {p: 10.0, i: 1, d: 1.0}

@@ -1,0 +1,91 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+    <xacro:macro name="sub_link_joint" params="parent_link child_link height radius beta little_width little_mass">
+        <!-- beta in degrees, convertion is needed, and is just the degrees needed to rotate-->
+
+        <xacro:if value="${parent_link.startswith('down')}"> <!--down_link, positive x axis-->
+            <joint name="up_to_${child_link}_medium" type="fixed">
+                <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 ${radians(beta)}"/>
+                <parent link="${parent_link}"/>
+                <child link="${child_link}_medium"/>
+            </joint>
+
+            <link name="${child_link}_medium">
+                <inertial>
+                    <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+                    <mass value="${little_mass}"/>
+                    <inertia ixx="${little_mass}" ixy="0.0" ixz="0.0" iyy="${little_mass}" iyz="0.0" izz="${little_mass}"/>
+                </inertial>
+                <visual>
+                    <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+                    <geometry>
+                        <box size="${little_width} ${little_width} ${little_width}"/>
+                    </geometry>
+                </visual>
+            </link>
+
+            <joint name="medium_to_${child_link}" type="fixed">
+                <origin xyz="${radius} 0.0 ${height}" rpy="0.0 0.0 0.0"/>
+                <parent link="${child_link}_medium"/>
+                <child link="${child_link}"/>
+            </joint>
+            <link name="${child_link}">
+                <inertial>
+                    <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+                    <mass value="${little_mass}"/>
+                    <inertia ixx="${little_mass}" ixy="0.0" ixz="0.0" iyy="${little_mass}" iyz="0.0" izz="${little_mass}"/>
+                </inertial>
+                <visual>
+                    <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+                    <geometry>
+                        <box size="${little_width} ${little_width} ${little_width}"/>
+                    </geometry>
+                </visual>
+            </link>
+        </xacro:if>
+
+        <xacro:if value="${parent_link.startswith('up')}"> <!--up_link, positive x axis-->
+            <joint name="up_to_${child_link}_medium" type="fixed">
+                <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 ${radians(beta)}"/>
+                <parent link="${parent_link}"/>
+                <child link="${child_link}_medium"/>
+            </joint>
+
+            <link name="${child_link}_medium">
+                <inertial>
+                    <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+                    <mass value="${little_mass}"/>
+                    <inertia ixx="${little_mass}" ixy="0.0" ixz="0.0" iyy="${little_mass}" iyz="0.0" izz="${little_mass}"/>
+                </inertial>
+                <visual>
+                    <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+                    <geometry>
+                        <box size="${little_width} ${little_width} ${little_width}"/>
+                    </geometry>
+                </visual>
+            </link>
+
+            <joint name="medium_to_${child_link}" type="fixed">
+                <origin xyz="${radius} 0.0 ${-1.0*height}" rpy="0.0 0.0 0.0"/>
+                <parent link="${child_link}_medium"/>
+                <child link="${child_link}"/>
+            </joint>
+            <link name="${child_link}">
+                <inertial>
+                    <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+                    <mass value="${little_mass}"/>
+                    <inertia ixx="${little_mass}" ixy="0.0" ixz="0.0" iyy="${little_mass}" iyz="0.0" izz="${little_mass}"/>
+                </inertial>
+                <visual>
+                    <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+                    <geometry>
+                        <box size="${little_width} ${little_width} ${little_width}"/>
+                    </geometry>
+                </visual>
+            </link>
+        </xacro:if>
+
+    </xacro:macro>
+
+</robot>

@@ -1,0 +1,5 @@
+<?xml version="1.0" ?>
+<robot name="sys" xmlns:xacro="http://wiki.ros.org/xacro">
+    <xacro:include filename="$(find sim_sys)/urdf/sim_sys.urdf.xacro"/>
+    <xacro:sim_sys prefix=""/>
+</robot>

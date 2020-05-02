@@ -1,0 +1,64 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+    <transmission name="car_to_barX_trans">
+        <type>transmission_interface/SimpleTransmission</type>
+        <joint name="car_to_barX">
+            <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+        </joint>
+        <actuator name="car_to_barX_motor">
+            <mechanicalReduction>1</mechanicalReduction>
+        </actuator>
+    </transmission>
+
+    <transmission name="barX_to_barY_trans">
+        <type>transmission_interface/SimpleTransmission</type>
+        <joint name="barX_to_barY">
+            <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+        </joint>
+        <actuator name="barX_to_barY_motor">
+            <mechanicalReduction>1</mechanicalReduction>
+        </actuator>
+    </transmission>
+
+    <transmission name="barY_to_barZ_trans">
+        <type>transmission_interface/SimpleTransmission</type>
+        <joint name="barY_to_barZ">
+            <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+        </joint>
+        <actuator name="barY_to_barZ_motor">
+            <mechanicalReduction>1</mechanicalReduction>
+        </actuator>
+    </transmission>
+
+    <transmission name="barZ_to_littleX_trans">
+        <type>transmission_interface/SimpleTransmission</type>
+        <joint name="barZ_to_littleX">
+            <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+        </joint>
+        <actuator name="barZ_to_littleX_motor">
+            <mechanicalReduction>1</mechanicalReduction>
+        </actuator>
+    </transmission>
+
+    <transmission name="littleX_to_littleY_trans">
+        <type>transmission_interface/SimpleTransmission</type>
+        <joint name="littleX_to_littleY">
+            <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+        </joint>
+        <actuator name="littleX_to_littleY_motor">
+            <mechanicalReduction>1</mechanicalReduction>
+        </actuator>
+    </transmission>
+
+    <transmission name="littleY_to_littleZ_trans">
+        <type>transmission_interface/SimpleTransmission</type>
+        <joint name="littleY_to_littleZ">
+            <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+        </joint>
+        <actuator name="littleY_to_littleZ_motor">
+            <mechanicalReduction>1</mechanicalReduction>
+        </actuator>
+    </transmission>
+
+</robot>

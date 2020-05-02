@@ -1,0 +1,63 @@
+/parallel_car:
+    # Publish all joint states -----------------------------------
+    joint_state_controller:
+      type: joint_state_controller/JointStateController
+      publish_rate: 50  
+    
+    mech_controller:
+      type: position_controllers/JointTrajectoryController
+      joints:
+        - car_to_barX
+        - barX_to_barY
+        - barY_to_barZ
+        - barZ_to_littleX
+        - littleX_to_littleY
+        - littleY_to_littleZ
+      constraints:
+        goal_time: &goal_time 0.6
+        stopped_velocity_tolerance: &stop_vel_tol 0.05
+        car_to_barX: {trajectory: &traj_tol 0.05, goal: &goal_tol 0.05}
+        barX_to_barY: {trajectory: *traj_tol, goal: *goal_tol}
+        barY_to_barZ: {trajectory: *traj_tol, goal: *goal_tol}
+        barZ_to_littleX: {trajectory: *traj_tol, goal: *goal_tol}
+        littleX_to_littleY: {trajectory: *traj_tol, goal: *goal_tol}
+        littleY_to_littleZ: {trajectory: *traj_tol, goal: *goal_tol}
+      stop_trajectory_duration: &stop_traj_dur 0.2
+      state_publish_rate:  50
+
+    support_and_mech_controller:
+      type: position_controllers/JointTrajectoryController
+      joints:
+        - world_medium_to_supportX
+        - supportX_to_supportY
+        - supportY_to_car
+        - car_to_barX
+        - barX_to_barY
+        - barY_to_barZ
+        - barZ_to_littleX
+        - littleX_to_littleY
+        - littleY_to_littleZ
+      constraints:
+        goal_time: *goal_time
+        stopped_velocity_tolerance: *stop_vel_tol
+        world_medium_to_supportX: {trajectory: *traj_tol, goal: *goal_tol}
+        supportX_to_supportY: {trajectory: *traj_tol, goal: *goal_tol}
+        supportY_to_car: {trajectory: *traj_tol, goal: *goal_tol}
+        car_to_barX: {trajectory: *traj_tol, goal: *goal_tol}
+        barX_to_barY: {trajectory: *traj_tol, goal: *goal_tol}
+        barY_to_barZ: {trajectory: *traj_tol, goal: *goal_tol}
+        barZ_to_littleX: {trajectory: *traj_tol, goal: *goal_tol}
+        littleX_to_littleY: {trajectory: *traj_tol, goal: *goal_tol}
+        littleY_to_littleZ: {trajectory: *traj_tol, goal: *goal_tol}
+      stop_trajectory_duration: *stop_traj_dur
+      state_publish_rate:  50
+      gains:
+        world_medium_to_supportX: {p: 10.0, i: 1, d: 1.0}
+        supportX_to_supportY: {p: 10.0, i: 1, d: 1.0}
+        supportY_to_car: {p: 10.0, i: 1, d: 1.0}
+        car_to_barX: {p: 10.0, i: 1, d: 1.0}
+        barX_to_barY: {p: 10.0, i: 1, d: 1.0}
+        barY_to_barZ: {p: 10.0, i: 1, d: 1.0}
+        barZ_to_littleX: {p: 10.0, i: 1, d: 1.0}
+        littleX_to_littleY: {p: 10.0, i: 1, d: 1.0}
+        littleY_to_littleZ: {p: 10.0, i: 1, d: 1.0}

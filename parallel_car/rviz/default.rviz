@@ -1,0 +1,493 @@
+Panels:
+  - Class: rviz/Displays
+    Help Height: 78
+    Name: Displays
+    Property Tree Widget:
+      Expanded:
+        - /Global Options1
+        - /Status1
+        - /Grid1
+        - /RobotModel1
+        - /Axes1
+        - /TF1
+        - /TF1/Frames1
+      Splitter Ratio: 0.5794117450714111
+    Tree Height: 544
+  - Class: rviz/Selection
+    Name: Selection
+  - Class: rviz/Tool Properties
+    Expanded:
+      - /2D Pose Estimate1
+      - /2D Nav Goal1
+      - /Publish Point1
+    Name: Tool Properties
+    Splitter Ratio: 0.5886790156364441
+  - Class: rviz/Views
+    Expanded:
+      - /Current View1
+    Name: Views
+    Splitter Ratio: 0.5
+  - Class: rviz/Time
+    Experimental: false
+    Name: Time
+    SyncMode: 0
+    SyncSource: ""
+Preferences:
+  PromptSaveOnExit: true
+Toolbars:
+  toolButtonStyle: 2
+Visualization Manager:
+  Class: ""
+  Displays:
+    - Alpha: 0.5
+      Cell Size: 1
+      Class: rviz/Grid
+      Color: 160; 160; 164
+      Enabled: true
+      Line Style:
+        Line Width: 0.029999999329447746
+        Value: Lines
+      Name: Grid
+      Normal Cell Count: 0
+      Offset:
+        X: 0
+        Y: 0
+        Z: 0
+      Plane: XY
+      Plane Cell Count: 10
+      Reference Frame: <Fixed Frame>
+      Value: true
+    - Alpha: 1
+      Class: rviz/RobotModel
+      Collision Enabled: false
+      Enabled: true
+      Links:
+        All Links Enabled: true
+        Expand Joint Details: false
+        Expand Link Details: false
+        Expand Tree: false
+        Link Tree Style: Links in Alphabetic Order
+        addon_Vertical_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        barX_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        barY_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        barZ_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        car_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        down_1:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        down_1_medium:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        down_2:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        down_2_medium:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        down_3:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        down_3_medium:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        down_4:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        down_4_medium:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        down_5:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        down_5_medium:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        down_6:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        down_6_medium:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        down_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        littleX_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        littleY_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        littleZ_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        supportX_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        supportY_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        up_1:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        up_1_medium:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        up_2:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        up_2_medium:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        up_3:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        up_3_medium:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        up_4:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        up_4_medium:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        up_5:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        up_5_medium:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        up_6:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        up_6_medium:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        up_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        world:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        wx_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        wx_medium_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        wx_visual_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+      Name: RobotModel
+      Robot Description: robot_description
+      TF Prefix: ""
+      Update Interval: 0
+      Value: true
+      Visual Enabled: true
+    - Class: rviz/Axes
+      Enabled: true
+      Length: 0.5
+      Name: Axes
+      Radius: 0.029999999329447746
+      Reference Frame: <Fixed Frame>
+      Value: true
+    - Class: rviz/TF
+      Enabled: true
+      Frame Timeout: 15
+      Frames:
+        All Enabled: false
+        addon_Vertical_link:
+          Value: true
+        barX_link:
+          Value: true
+        barY_link:
+          Value: true
+        barZ_link:
+          Value: true
+        car_link:
+          Value: true
+        down_1:
+          Value: true
+        down_1_medium:
+          Value: false
+        down_2:
+          Value: true
+        down_2_medium:
+          Value: false
+        down_3:
+          Value: true
+        down_3_medium:
+          Value: false
+        down_4:
+          Value: true
+        down_4_medium:
+          Value: false
+        down_5:
+          Value: true
+        down_5_medium:
+          Value: false
+        down_6:
+          Value: true
+        down_6_medium:
+          Value: false
+        down_link:
+          Value: true
+        littleX_link:
+          Value: true
+        littleY_link:
+          Value: true
+        littleZ_link:
+          Value: true
+        supportX_link:
+          Value: true
+        supportY_link:
+          Value: true
+        up_1:
+          Value: true
+        up_1_medium:
+          Value: false
+        up_2:
+          Value: true
+        up_2_medium:
+          Value: false
+        up_3:
+          Value: true
+        up_3_medium:
+          Value: false
+        up_4:
+          Value: true
+        up_4_medium:
+          Value: false
+        up_5:
+          Value: true
+        up_5_medium:
+          Value: false
+        up_6:
+          Value: true
+        up_6_medium:
+          Value: false
+        up_link:
+          Value: true
+        world:
+          Value: true
+        wx_link:
+          Value: true
+        wx_medium_link:
+          Value: false
+        wx_visual_link:
+          Value: true
+      Marker Scale: 1
+      Name: TF
+      Show Arrows: true
+      Show Axes: true
+      Show Names: true
+      Tree:
+        world:
+          supportX_link:
+            supportY_link:
+              car_link:
+                barX_link:
+                  barY_link:
+                    barZ_link:
+                      littleX_link:
+                        littleY_link:
+                          littleZ_link:
+                            addon_Vertical_link:
+                              wx_visual_link:
+                                wx_medium_link:
+                                  wx_link:
+                                    {}
+                            up_link:
+                              up_1_medium:
+                                up_1:
+                                  {}
+                              up_2_medium:
+                                up_2:
+                                  {}
+                              up_3_medium:
+                                up_3:
+                                  {}
+                              up_4_medium:
+                                up_4:
+                                  {}
+                              up_5_medium:
+                                up_5:
+                                  {}
+                              up_6_medium:
+                                up_6:
+                                  {}
+                down_link:
+                  down_1_medium:
+                    down_1:
+                      {}
+                  down_2_medium:
+                    down_2:
+                      {}
+                  down_3_medium:
+                    down_3:
+                      {}
+                  down_4_medium:
+                    down_4:
+                      {}
+                  down_5_medium:
+                    down_5:
+                      {}
+                  down_6_medium:
+                    down_6:
+                      {}
+      Update Interval: 0
+      Value: true
+  Enabled: true
+  Global Options:
+    Background Color: 48; 48; 48
+    Default Light: true
+    Fixed Frame: world
+    Frame Rate: 30
+  Name: root
+  Tools:
+    - Class: rviz/Interact
+      Hide Inactive Objects: true
+    - Class: rviz/MoveCamera
+    - Class: rviz/Select
+    - Class: rviz/FocusCamera
+    - Class: rviz/Measure
+    - Class: rviz/SetInitialPose
+      Theta std deviation: 0.2617993950843811
+      Topic: /initialpose
+      X std deviation: 0.5
+      Y std deviation: 0.5
+    - Class: rviz/SetGoal
+      Topic: /move_base_simple/goal
+    - Class: rviz/PublishPoint
+      Single click: true
+      Topic: /clicked_point
+  Value: true
+  Views:
+    Current:
+      Class: rviz/Orbit
+      Distance: 3.8810691833496094
+      Enable Stereo Rendering:
+        Stereo Eye Separation: 0.05999999865889549
+        Stereo Focal Distance: 1
+        Swap Stereo Eyes: false
+        Value: false
+      Focal Point:
+        X: -0.4279184639453888
+        Y: -0.6086322665214539
+        Z: 0.9626972079277039
+      Focal Shape Fixed Size: true
+      Focal Shape Size: 0.05000000074505806
+      Invert Z Axis: false
+      Name: Current View
+      Near Clip Distance: 0.009999999776482582
+      Pitch: 0.1853979229927063
+      Target Frame: <Fixed Frame>
+      Value: Orbit (rviz)
+      Yaw: 1.1653733253479004
+    Saved: ~
+Window Geometry:
+  Displays:
+    collapsed: false
+  Height: 841
+  Hide Left Dock: false
+  Hide Right Dock: false
+  QMainWindow State: 000000ff00000000fd000000040000000000000156000002abfc0200000008fb0000001200530065006c0065006300740069006f006e00000001e10000009b0000005c00fffffffb0000001e0054006f006f006c002000500072006f007000650072007400690065007302000001ed000001df00000185000000a3fb000000120056006900650077007300200054006f006f02000001df000002110000018500000122fb000000200054006f006f006c002000500072006f0070006500720074006900650073003203000002880000011d000002210000017afb000000100044006900730070006c006100790073010000003d000002ab000000c900fffffffb0000002000730065006c0065006300740069006f006e00200062007500660066006500720200000138000000aa0000023a00000294fb00000014005700690064006500530074006500720065006f02000000e6000000d2000003ee0000030bfb0000000c004b0069006e0065006300740200000186000001060000030c00000261000000010000010f000002abfc0200000003fb0000001e0054006f006f006c002000500072006f00700065007200740069006500730100000041000000780000000000000000fb0000000a00560069006500770073010000003d000002ab000000a400fffffffb0000001200530065006c0065006300740069006f006e010000025a000000b200000000000000000000000200000490000000a9fc0100000001fb0000000a00560069006500770073030000004e00000080000002e10000019700000003000004b00000003efc0100000002fb0000000800540069006d00650100000000000004b0000002eb00fffffffb0000000800540069006d006501000000000000045000000000000000000000023f000002ab00000004000000040000000800000008fc0000000100000002000000010000000a0054006f006f006c00730100000000ffffffff0000000000000000
+  Selection:
+    collapsed: false
+  Time:
+    collapsed: false
+  Tool Properties:
+    collapsed: false
+  Views:
+    collapsed: false
+  Width: 1200
+  X: 266
+  Y: 28
