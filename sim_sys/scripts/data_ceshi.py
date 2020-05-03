@@ -72,14 +72,15 @@ def main():
     
     cur_pose=Pose()
     cur_pose.orientation.w=0.707
-    cur_pose.orientation.x=0.707
-    cur_pose.orientation.y=0
+    cur_pose.orientation.x=0
+    cur_pose.orientation.y=-0.707
     cur_pose.orientation.z=0.0
     R,P,Y=quaternion_to_euler(cur_pose.orientation)
     print('R: '+str(R)+' P: '+str(P)+' Y: '+str(Y))
-    
-    o=euler_to_quaternion(math.pi/2,0,0)
+    '''
+    o=euler_to_quaternion(0,0,0)
     print(str(o.w)+' '+str(o.x)+' '+str(o.y)+' '+str(o.z))
+    
     '''
     res=Pose()
     start_orientation=Quaternion(0,0,0.707,0.707)
@@ -88,6 +89,8 @@ def main():
     print(str(end_orientation.w)+' '+str(end_orientation.x)+' '+str(end_orientation.y)+' '+str(end_orientation.z))
     res.orientation=interpolation(start_orientation,end_orientation,0.5)
     print(str(res.orientation.w)+' '+str(res.orientation.x)+' '+str(res.orientation.y)+' '+str(res.orientation.z))
+    '''
+
 
 if __name__ == '__main__':
     main()

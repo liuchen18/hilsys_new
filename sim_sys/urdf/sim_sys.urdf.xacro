@@ -54,7 +54,7 @@
             <parent link="${prefix}wx"/>
             <child link="${prefix}virtual_x_wx"/>
             <axis xyz="1 0 0"/>
-            <limit lower="-${pi/10}" upper="${pi/2}" effort="50" velocity="1.0" />
+            <limit lower="0" upper="${pi/2}" effort="50" velocity="1.0" />
       </joint>
       <joint name="${prefix}wx_agv2_2" type="fixed">
             <origin xyz="0.0 0.0 0.0" rpy="${pi/4} 0.0 0.0"/>
@@ -62,7 +62,7 @@
             <child link="${prefix}virtual_y_wx"/>
       </joint>
       <joint name="${prefix}virtual_agv2" type="fixed">
-            <origin xyz="0.0 0.0 -1" rpy="0.0 0.0 0.0"/>
+            <origin xyz="0.0 0.0 -1.18" rpy="0.0 0.0 0.0"/>
             <parent link="${prefix}virtual_y_wx"/>
             <child link="${prefix}agv_link2"/>
       </joint>
@@ -224,14 +224,14 @@
             <parent link="${prefix}agv_link2"/>
             <child link="${prefix}virtual_x"/>
             <axis xyz="1 0 0"/>
-            <limit lower="-5" upper="5" effort="50" velocity="1.0" />
+            <limit lower="-8" upper="8" effort="50" velocity="1.0" />
       </joint>
       <joint name="${prefix}agv2_viry" type="prismatic">
             <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
             <parent link="${prefix}virtual_x"/>
             <child link="${prefix}virtual_y"/>
             <axis xyz="0 1 0"/>
-            <limit lower="-5" upper="5" effort="50" velocity="1.0" />
+            <limit lower="-8" upper="8" effort="50" velocity="1.0" />
       </joint>
       <joint name="${prefix}agv2_virz" type="revolute">
             <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>

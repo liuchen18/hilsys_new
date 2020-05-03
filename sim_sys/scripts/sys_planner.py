@@ -141,7 +141,7 @@ class trajectory_class():
         self.omega=5.0/180*math.pi
         self.period=10
     
-    def desired_trajectory(self,time,type=1,period=10):
+    def desired_trajectory(self,time,type=1,period=10): #period is the interpolation time
         '''
         generate the desired trajectory, return a pose. the function can be replaced by a trajectory from the simulator 
         '''
@@ -171,14 +171,36 @@ class trajectory_class():
                 desired_pose.position.z=0.0
 
                 #interpolation of the quaternion:Spherical linear interpolation
-                start_orientation=Quaternion(0,0,0.707,0.707)
-                end_orientation=Quaternion(0,0.707,0,0.707)
+                start_orientation=Quaternion(0,0,0.707,0.707)  #ce
+                end_orientation=Quaternion(0,0.707,0,0.707)   #hou
                 if time <= period +10:
                     desired_pose.orientation=self.interpolation(start_orientation,end_orientation,(time-10)/period)
                     #print(str(desired_pose.orientation.w)+' '+str(desired_pose.orientation.x)+' '+str(desired_pose.orientation.y)+' '+str(desired_pose.orientation.z))
                     return desired_pose
                 else:
                     rospy.logerr('input time should be less than period + 10 s, current period is '+str(period))
+        elif type == 3:
+            if time <10:
+                desired_pose.position.x=4*math.cos(2*math.pi/40*(time))
+                desired_pose.position.y=4*math.sin(2*math.pi/40*(time))
+                desired_pose.position.z=0.0
+
+                #interpolation of the quaternion:Spherical linear interpolation
+                start_orientation=Quaternion(0,0,0.707,0.707)  #ce
+                end_orientation=Quaternion(0,0,1,6e-17)   #qian
+                if time <= period:
+                    desired_pose.orientation=self.interpolation(start_orientation,end_orientation,time/period)
+                    #print(str(desired_pose.orientation.w)+' '+str(desired_pose.orientation.x)+' '+str(desired_pose.orientation.y)+' '+str(desired_pose.orientation.z))
+                    return desired_pose
+            else:
+                desired_pose.position.x=0
+                desired_pose.position.y=4-0.2*(time-10)
+                desired_pose.position.z=0.0
+                desired_pose.orientation.x=0
+                desired_pose.orientation.y=0
+                desired_pose.orientation.z=1
+                desired_pose.orientation.w=6e-17
+                return desired_pose
     
     def interpolation(self,start_orientation,end_orientation,t):
         '''compute the current orientation using Spherical linear interpolation method. return a Quaternion
@@ -224,6 +246,19 @@ class trajectory_class():
         nutation_pose.orientation=quaternion
 
         return nutation_pose
+
+    def desired_trajectory_point(self):
+        '''generate a pose, to test it
+        '''
+        desired_pose=Pose()
+        desired_pose.position.x=3
+        desired_pose.position.y=0
+        desired_pose.position.z=0.0
+        desired_pose.orientation.x=0
+        desired_pose.orientation.y=0
+        desired_pose.orientation.z=1
+        desired_pose.orientation.w=6e-17
+        return desired_pose
 
 
 
@@ -291,7 +326,7 @@ class planner_class():
         way_points=[]
         rospy.loginfo('generate way points of the path')
         while count*self.time_duration < self.total_time:
-            desired_pose=self.trajectory.desired_trajectory(count*self.time_duration,2,self.total_time-10)
+            desired_pose=self.trajectory.desired_trajectory(count*self.time_duration,3,self.total_time-10) #second param is trajectory type
             way_points.append(copy.deepcopy(desired_pose))
             count+=1
         
@@ -302,7 +337,7 @@ class planner_class():
 
         #find the joint values that the end effector reaches the first given point
         first_point_num=0
-        init_pose=self.trajectory.desired_trajectory(0,2)
+        init_pose=self.trajectory.desired_trajectory(0,3)
         total_error=float('inf')
         goal_link='pan_link'
         while total_error > 0.001 or total_error < -0.001:
@@ -327,6 +362,12 @@ class planner_class():
         rospy.loginfo('trajectory generated and writen into txt file')
         #for i in range(10):
         #    print(trajectory.joint_trajectory.points[i])
+
+    def plan_given_pose(self,desired_pose):
+        '''plan a given point to test it
+        '''
+        way_point=[desired_pose]
+        trajectory=self.sys.compute_cartisian_trajectory(way_point)
         
 
 
@@ -355,6 +396,8 @@ def main():
         print(e_pose)
 
     planner.plan()
+    #desired_pose=planner.trajectory.desired_trajectory_point()
+    #planner.plan_given_pose(desired_pose)
 
 
 
