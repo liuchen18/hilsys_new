@@ -18,9 +18,6 @@ if __name__ == "__main__":
 
     listened_to_fixed = False
 
-    max_length = 0.0
-    min_length = 1.0
-
     while not listened_to_fixed:
         # listen to fixed tf to initialize
         if para_ik.listen_to_up_down_fixed_tf():
@@ -33,19 +30,14 @@ if __name__ == "__main__":
     while not rospy.is_shutdown():
         if para_ik.listen_to_tf():
             para_ik.calculate_pole_length_from_inherent()
-            para_ik.print_pole_length()
-            pole_length_list = para_ik.get_pole_length_list()
-            max_length_in_list = max(pole_length_list)
-            if max_length_in_list > max_length:
-                max_length = max_length_in_list
-            min_length_in_list = min(pole_length_list)
-            if min_length_in_list < min_length:
-                min_length = min_length_in_list
+            para_ik.write_pole_length_list_into_file()
+            # para_ik.print_pole_length()
+            para_ik.draw_pole_length_list_history(lower_bound=0.35, upper_bound=0.55)
         else:
             rospy.logerr("failed to listen to tf from down_num to up_num")
 
         try:
             rate_fast.sleep()
-        except rospy.ROSInterruptException:
-            print "max is {}".format(max_length)
-            print "min is {}".format(min_length)
+        except (rospy.ROSInterruptException, EOFError):
+            para_ik.close_file()
+            print "\nManual ending"

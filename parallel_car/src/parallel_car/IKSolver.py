@@ -10,6 +10,9 @@ import copy
 from parallel_car.TransRotGen import Rotation, Translation, quaternion_to_rotation_matrix, vector3_to_translation_matrix
 
 import numpy as np
+import matplotlib.pyplot as plt
+
+import csv
 
 CAR_HEIGHT = 0.36
 ADDON_LENGTH = 0.5
@@ -145,9 +148,8 @@ class SerialPose:
 
 class ParallelIKSolver:
     """A parallel mechanism IK solver class for listening to tf msgs and calculating length of poles
-
     """
-    def __init__(self, pole_num=6, run_env="rviz"):
+    def __init__(self, pole_num=6, history_num=500, run_env="rviz", file_name="pole_length.csv", run_freq=20.0):
         """Constructor for ParallelIKSolver
         
         Keyword Arguments:
@@ -167,6 +169,22 @@ class ParallelIKSolver:
         # a list for the length of pole_num poles
         self._pole_length_list = list()
 
+        # num of history of pole length to maintain
+        self._history_num = history_num
+
+        # a list to contain the history of length of pole_num poles
+        self._pole_length_list_history = list()
+        for idx in range(self._pole_num):
+            self._pole_length_list_history.append(list())
+
+        # some settings about plt
+
+        plt.ion()
+        plt.show()
+        
+        # if _draw_counter % 5 == 0 then draw, thus should draw 50/5=10Hz
+        self._draw_counter = 0
+
         # a list of transfromation from down_link to down_i (i from 1 to 6), fixed tf, no change afterwards
         self._down_to_down_num_tf_list = list()
         # a list of homogeneous transformation matrix from down_link to down_i
@@ -181,6 +199,21 @@ class ParallelIKSolver:
             self._o_to_down_height = CAR_HEIGHT/2.0
         else: # run_env== 'gazebo'
             self._o_to_down_height = CAR_HEIGHT
+
+        # run frequency in nodes
+        self._run_freq = run_freq
+        
+        # store file name, maybe not useful?
+        self._file_name = file_name
+        # open the file
+        self._file = open(self._file_name, 'a')
+        # create a csv writer
+        self._writer = csv.writer(self._file)
+        pole_names = ['pole'+str(idx+1) for idx in range(self._pole_num)]
+        # combine time tag with pole names
+        output_row = ['time'] + pole_names
+        # write tags into the file
+        self._writer.writerow(output_row)
 
     def listen_to_tf(self):
         """Use tf listener to get tf from up joint to down joint, i.e. origin is down joint
@@ -214,6 +247,11 @@ class ParallelIKSolver:
             z = vector3_list[idx].z
             length = math.sqrt(math.pow(x,2) + math.pow(y,2) + math.pow(z,2))
             self._pole_length_list.append(length)
+            self._pole_length_list_history[idx].append(length)
+            # _pole_length_list_history should not longer than _history_num
+            while len(self._pole_length_list_history[idx]) > self._history_num:
+                # thus pop the earliest 
+                self._pole_length_list_history[idx].pop(0)
 
     def listen_to_up_down_fixed_tf(self):
 
@@ -279,7 +317,6 @@ class ParallelIKSolver:
         Arguments:
             parallel_pose_desired {ParallelPose} -- the desired parallel pose of the car and mechanism
             wx_pose {Pose} -- a Pose-type msg containing the msg of the 
-
         Return:
             [tuple] -- a tuple, first item is the list of pole length, second item is the transformations from down_num to up_num
         """
@@ -345,6 +382,56 @@ class ParallelIKSolver:
         for idx in range(self._pole_num):
             print "pole {} is {} meter".format(idx+1, self._pole_length_list[idx])
 
+    def draw_pole_length_list_history(self, lower_bound=0, upper_bound=0, ndiv=5):
+        
+        self._draw_counter += 1
+        # so should draw at 5 Hz
+        if self._draw_counter % ndiv ==0:
+            plt.clf()
+            # get the number of points in pole length history
+            pt_num = len(self._pole_length_list_history[0])
+            # interval between appending pole length data
+            run_interval = 1.0/self._run_freq
+            # calculate x-axis of graph
+            x_axis = np.linspace(-run_interval*(pt_num-1), 0, num=pt_num)
+            # plot all poles into one graph
+            for idx in range(self._pole_num):
+                plt.plot(x_axis, self._pole_length_list_history[idx], label='pole'+str(idx+1))
+            # get handle of current pic
+            ax = plt.subplot(1,1,1)
+            # set minor y-axis grid
+            ax.set_yticks([lower_bound, upper_bound], minor=True)
+            # set major y-axis grid, will be used for check whether pole length out bounds
+            ax.set_yticks(np.linspace(0.3, 0.6, num=4), minor=False)
+            # show minor grids
+            ax.yaxis.grid(True, which='minor')
+            # show major grids
+            ax.yaxis.grid(True, which='major')
+            # show labels of each line
+            plt.legend()
+            # redraw the pic
+            plt.draw()
+            # pause for 0.01 secs, but I still do no understand, why 0.01 secs will be enough
+            # this func will call every 0.25 secs
+            plt.pause(0.01)
+
+            self._draw_counter = 0
+    
+    def write_pole_length_list_into_file(self):
+
+        # get current time in seconds
+        current_time = rospy.Time.now().to_sec()
+
+        # combine time with pole length list
+        output_row = [current_time] + self._pole_length_list
+        
+        # write time with pole length into file
+        self._writer.writerow(output_row)
+
+    def close_file(self):
+
+        self._file.close()
+
     def get_pole_length_list(self):
         """Return a copy version of self._pole_length_list
         
@@ -355,11 +442,9 @@ class ParallelIKSolver:
 
     def get_transform(self, source_link, target_link):
         """A function to get transform from source_link to target_link
-
         Arguments:
             source_link {str} -- source link
             target_link {str} -- target link
-
         Returns:
             [tuple] -- if have successfully get the transform, first item is True, else False. If first item is True, second item is the transform, else None-type object
         """
@@ -406,7 +491,6 @@ class SerialIKSolver:
 
     def listen_to_fixed_tf(self):
         """Listen to the transform from down_link to up_link and set it to _Z_OFFSET
-
         Returns:
             [bool] -- if successfully listen to transform from down_link to up_link return True, else resturn False
         """
@@ -449,7 +533,6 @@ class SerialIKSolver:
 
     def listen_to_tf(self):
         """Use private _tfBuffer to look up transform from down_link to up_link and store it in _T_down_to_up_trans and _T_down_to_up_rot
-
         Returns:
             [bool] -- if successfully lookup transform from down_link to up_link and store it, return True, else return False
         """
@@ -500,7 +583,6 @@ class SerialIKSolver:
 
     def compute_ik_from_target(self, parallel_pose_desired, wx_pose):
         """Compute inverse kinematics of three prismatic joints and three revolute joints from specified pose of parallel mechanism and wx_pose
-
         Arguments:
             parallel_pose_desired {ParallelPose} -- a ParallelPose specifying the pose of the parallel car
             wx_pose {Pose} -- Pose-type msg specifying the pose of wx_link
@@ -555,11 +637,9 @@ class SerialIKSolver:
 
     def get_transform(self, source_link, target_link):
         """A function to get transform from source_link to target_link
-
         Arguments:
             source_link {str} -- source link
             target_link {str} -- target link
-
         Returns:
             [tuple] -- if have successfully get the transform, first item is True, else False. If first item is True, second item is the transform, else None-type object
         """
@@ -572,11 +652,9 @@ class SerialIKSolver:
 
     def get_transform_stamped(self, source_link, target_link):
         """A function to get stamped transform from source_link to target_link
-
         Arguments:
             source_link {str} -- source link
             target_link {str} -- target link
-
         Returns:
             [tuple] -- if have successfully get the transform, first item is True, else False. If first item is True, second item is the stamped transform, else None-type object
         """
@@ -589,10 +667,8 @@ class SerialIKSolver:
 
     def compute_ik_from_modified_matrix(self, T_o_to_wx_modified):
         """A function to compute the pose of both the base and the mechanism onboard
-
         Arguments:
             T_o_to_wx_modified {4x4 Numpy matrix} -- homogeneous transformation matrix representing the transform from origin to wx_link
-
         Returns:
             [tuple] -- the first item is a ParallelPose-type object specifying the motion of the base and wx_link, 
                     the second item is a SerialPose-type object specifying the motion of the machanism onboard, 
