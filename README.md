@@ -24,3 +24,13 @@ rosrun sim_sys start_sim.py
 the start_sim.py node read trajectory from data in txt file.<br>
 change the origin path to your absolute path
 
+if you want to see the figure of the poles, run<br>
+```
+rosrun parallel_car parallel_monitor.py
+```
+or launch the launch file that merge the second the third command<br>
+
+```
+roslaunch sim_sys start_movement.launch 
+```
+
