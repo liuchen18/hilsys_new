@@ -5,6 +5,10 @@
     <material>Gazebo/Blue</material>
   </gazebo>
 
+  <gazebo reference="${prefix}shengjiangtai">
+    <material>Gazebo/Grey</material>
+  </gazebo>
+
   <gazebo reference="${prefix}base_link">
     <material>Gazebo/Purple</material>
   </gazebo>
@@ -35,6 +39,10 @@
 
   <gazebo reference="${prefix}link_7">
       <material>Gazebo/Yellow</material>
+  </gazebo>
+
+  <gazebo reference="${prefix}falan">
+      <material>Gazebo/Grey</material>
   </gazebo>
 
   <gazebo reference="${prefix}pan_link">
