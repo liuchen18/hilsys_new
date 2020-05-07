@@ -181,8 +181,8 @@ class trajectory_class():
                     rospy.logerr('input time should be less than period + 10 s, current period is '+str(period))
         elif type == 3:
             if time <10:
-                desired_pose.position.x=4*math.cos(2*math.pi/40*(time))
-                desired_pose.position.y=4*math.sin(2*math.pi/40*(time))
+                desired_pose.position.x=3*math.cos(2*math.pi/40*(time))
+                desired_pose.position.y=3*math.sin(2*math.pi/40*(time))
                 desired_pose.position.z=0.0
 
                 #interpolation of the quaternion:Spherical linear interpolation
@@ -194,7 +194,7 @@ class trajectory_class():
                     return desired_pose
             else:
                 desired_pose.position.x=0
-                desired_pose.position.y=4-0.2*(time-10)
+                desired_pose.position.y=3-0.15*(time-10)
                 desired_pose.position.z=0.0
                 desired_pose.orientation.x=0
                 desired_pose.orientation.y=0

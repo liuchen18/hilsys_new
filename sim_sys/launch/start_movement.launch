@@ -1,0 +1,8 @@
+<launch>
+
+        
+    <node name="paraller_monitor" pkg="parallel_car" type="parallel_monitor.py"/>
+
+
+	<node name="sys_control" pkg="sim_sys" type="start_sim.py" respawn="false" output="screen"/>
+</launch>

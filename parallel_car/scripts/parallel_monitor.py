@@ -18,7 +18,7 @@ if __name__ == "__main__":
 
     listened_to_fixed = False
 
-    while not listened_to_fixed:
+    while not listened_to_fixed and not rospy.is_shutdown():
         # listen to fixed tf to initialize
         if para_ik.listen_to_up_down_fixed_tf():
             rospy.loginfo("listend to parallel fixed tf successfully")
