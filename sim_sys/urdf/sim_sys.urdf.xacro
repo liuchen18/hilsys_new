@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <robot xmlns:xacro="http://wiki.ros.org/xacro">
   <xacro:macro name="sim_sys" params="prefix">
-  <xacro:property name="pi" value="3.1415926535897931" />
+  <xacro:property name="PI" value="3.1415926535897931" />
   <xacro:macro name="cylinder_inertial" params="radius length mass *origin">
     <inertial>
       <mass value="${mass}" />
@@ -387,14 +387,32 @@
           <mu2>0.5</mu2>
         </gazebo>
 
-
+<link name="${prefix}control_box">
+    <inertial>
+      <mass value="23" />
+      <inertia ixx="1" ixy="0.0" ixz="0.0" iyy="1" iyz="0.0" izz="1" />
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <box size="0.5 0.483 0.19"/>
+      </geometry>
+      <material name="blue"/>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <box size="0.5 0.483 0.19"/>
+      </geometry>
+    </collision>
+  </link>
 
 
   <joint
     name="${prefix}agv_iiwa_joint"
     type="fixed">
     <origin
-      xyz="0 0 0.18"
+      xyz="-0.2 0 0.18"
       rpy="0 0 0" />
     <parent
       link="${prefix}agv_link" />
@@ -546,6 +564,12 @@
     <!-- end of link list -->
 
     <!-- joint list -->
+  <joint name="${prefix}agv_tocontrol_box" type="fixed">
+    <origin xyz="0.35 0 0.28" rpy="0 0 0" />
+    <parent link="${prefix}agv_link" />
+    <child link="${prefix}control_box" />
+  </joint>
+
     <joint name="${prefix}joint_a1" type="revolute">
       <origin xyz="0 0 0" rpy="0 0 0" />
       <parent link="${prefix}base_link" />
@@ -601,15 +625,38 @@
       <child link="${prefix}tool0" />
       <axis xyz="0 0 0" />
     </joint>
-    <!-- end of joint list -->
 
-    <joint name="${prefix}pan_joint" type="fixed">
-      <parent link="${prefix}link_7" />
-      <child link = "${prefix}pan_link" />
-      <origin xyz="0.0 0.0 0.12" rpy="1.5708 0.0 0.0" />
-      <axis xyz="0 1 0" />
-      <dynamics damping="0.0" friction="0.0"/>
-    </joint>
+    <link name="${prefix}falan">
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://sim_sys/mesh/falan.STL"/>
+      </geometry>
+      <material name="white"/>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://sim_sys/mesh/falan.STL"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="0.1" />
+      <inertia ixx="0.1" ixy="0.0" ixz="0.0" iyy="0.1" iyz="0.0" izz="0.1" />
+    </inertial>
+  </link>
+
+  <joint name="${prefix}link7_to_falan_joint" type="fixed">
+    <parent link="${prefix}link_7" />
+    <child link = "${prefix}falan" />
+    <origin xyz="0.0 0.0 0.126" rpy="${-PI/2.0} 0.0 ${PI/2.0}" />
+  </joint>
+
+    <joint name="${prefix}falan_to_pan_joint" type="fixed">
+    <parent link="${prefix}falan" />
+    <child link = "${prefix}pan_link" />
+    <origin xyz="0.11 0.0 0" rpy="${PI/2.0} 0.0 ${PI/2.0}" />
+  </joint>
 
     <link name="${prefix}pan_link">
       <visual>
