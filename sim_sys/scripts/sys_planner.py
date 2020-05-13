@@ -146,16 +146,40 @@ class trajectory_class():
         generate the desired trajectory, return a pose. the function can be replaced by a trajectory from the simulator 
         '''
         desired_pose=Pose()
-        if type ==1: # hou
+        if type ==1: # qian
             desired_pose.position.x=0
-            desired_pose.position.y=-5+time*0.15
-            desired_pose.position.z=0.0
+            desired_pose.position.y=5-0.2*time
+            desired_pose.position.z=0
             desired_pose.orientation.x=0
-            desired_pose.orientation.y=0.707
-            desired_pose.orientation.z=0
-            desired_pose.orientation.w=0.707
+            desired_pose.orientation.y=0
+            desired_pose.orientation.z=1
+            desired_pose.orientation.w=1e-6
             return desired_pose
         elif type == 2:
+            if time <10:
+                desired_pose.position.x=5-time*0.3
+                desired_pose.position.y=0
+                desired_pose.position.z=0.0
+                desired_pose.orientation.x=0
+                desired_pose.orientation.y=0
+                desired_pose.orientation.z=0.707
+                desired_pose.orientation.w=0.707
+                return desired_pose
+            else:
+                desired_pose.position.x=2*math.cos(2*math.pi/40*(time-10))
+                desired_pose.position.y=2*math.sin(2*math.pi/40*(time-10))
+                desired_pose.position.z=0.0
+
+                #interpolation of the quaternion:Spherical linear interpolation
+                start_orientation=Quaternion(0,0,0.707,0.707)  #ce
+                end_orientation=Quaternion(0,0,1,1e-6)   #qian
+                if time <= period +10:
+                    desired_pose.orientation=self.interpolation(start_orientation,end_orientation,(time-10)/period)
+                    #print(str(desired_pose.orientation.w)+' '+str(desired_pose.orientation.x)+' '+str(desired_pose.orientation.y)+' '+str(desired_pose.orientation.z))
+                    return desired_pose
+                else:
+                    rospy.logerr('input time should be less than period + 10 s, current period is '+str(period))
+        elif type == 3:
             if time <10:
                 desired_pose.position.x=5-time*0.3
                 desired_pose.position.y=0
@@ -172,42 +196,24 @@ class trajectory_class():
 
                 #interpolation of the quaternion:Spherical linear interpolation
                 start_orientation=Quaternion(0,0,0.707,0.707)  #ce
-                end_orientation=Quaternion(0,0.707,0,0.707)   #hou
+                end_orientation=Quaternion(0,0,0,1)   #hou
                 if time <= period +10:
                     desired_pose.orientation=self.interpolation(start_orientation,end_orientation,(time-10)/period)
                     #print(str(desired_pose.orientation.w)+' '+str(desired_pose.orientation.x)+' '+str(desired_pose.orientation.y)+' '+str(desired_pose.orientation.z))
                     return desired_pose
                 else:
                     rospy.logerr('input time should be less than period + 10 s, current period is '+str(period))
-        elif type == 3:
-            if time <10:
-                desired_pose.position.x=3*math.cos(2*math.pi/40*(time))
-                desired_pose.position.y=3*math.sin(2*math.pi/40*(time))
-                desired_pose.position.z=0.0
-
-                #interpolation of the quaternion:Spherical linear interpolation
-                start_orientation=Quaternion(0,0,0.707,0.707)  #ce
-                end_orientation=Quaternion(0,0,1,6e-17)   #qian
-                if time <= period:
-                    desired_pose.orientation=self.interpolation(start_orientation,end_orientation,time/period)
-                    #print(str(desired_pose.orientation.w)+' '+str(desired_pose.orientation.x)+' '+str(desired_pose.orientation.y)+' '+str(desired_pose.orientation.z))
-                    return desired_pose
-            else:
-                desired_pose.position.x=0
-                desired_pose.position.y=3-0.15*(time-10)
-                desired_pose.position.z=0.0
-                desired_pose.orientation.x=0
-                desired_pose.orientation.y=0
-                desired_pose.orientation.z=1
-                desired_pose.orientation.w=6e-17
-                return desired_pose
     
     def interpolation(self,start_orientation,end_orientation,t):
         '''compute the current orientation using Spherical linear interpolation method. return a Quaternion
         '''
         cosa = start_orientation.x*end_orientation.x + start_orientation.y*end_orientation.y + start_orientation.z*end_orientation.z + start_orientation.w*end_orientation.w
+        end_o=Quaternion()
         if cosa < 0:
-            end_o=-end_orientation
+            end_o.x= -end_orientation.x
+            end_o.y= -end_orientation.y
+            end_o.z= -end_orientation.z
+            end_o.w= -end_orientation.w
             cosa = -cosa
         else:
             end_o=end_orientation
@@ -251,13 +257,13 @@ class trajectory_class():
         '''generate a pose, to test it
         '''
         desired_pose=Pose()
-        desired_pose.position.x=3
-        desired_pose.position.y=0
+        desired_pose.position.x=0
+        desired_pose.position.y=3
         desired_pose.position.z=0.0
         desired_pose.orientation.x=0
         desired_pose.orientation.y=0
-        desired_pose.orientation.z=1
-        desired_pose.orientation.w=6e-17
+        desired_pose.orientation.z=0.707
+        desired_pose.orientation.w=0.707
         return desired_pose
 
 
@@ -307,7 +313,7 @@ class planner_class():
         wx_pose=Pose()
         wx_pose.position.x=-(joint_values[1]+3)/2 #this means the x position of the car
         wx_pose.position.y=-joint_values[2]/2 #this means the y position of the car
-        wx_pose.position.z=1.36 #this z value is NOT acurate. need to be confermed
+        wx_pose.position.z=1 #this z value is NOT acurate. need to be confermed
         R,P,Y=quaternion_to_euler(nutation_pose.orientation)
         planned_pose=euler_to_quaternion(-math.pi/2+joint_values[0],0,0)
 

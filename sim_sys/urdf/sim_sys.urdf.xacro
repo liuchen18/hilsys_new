@@ -22,13 +22,13 @@
                 <geometry>
                     <mesh filename="package://sim_sys/mesh/MZ.STL" />
                 </geometry>
-                <origin rpy="${pi/2} 0 0" xyz="0 0 0"/>
+                <origin rpy="${pi/2} 0 0" xyz="0.0 0.1 -0.0"/>
             </visual>
             <collision>
                 <geometry>
                     <mesh filename="package://sim_sys/mesh/MZ.STL" />
                 </geometry>
-                <origin rpy="${pi/2} 0 0" xyz="0 0 0"/>
+                <origin rpy="${pi/2} 0 0" xyz="0.0 0.1 -0.0"/>
             </collision>
             <xacro:default_inertial mass="10"/>
 	      </link>
@@ -50,19 +50,19 @@
         </inertial>
       </link>
     <joint name="${prefix}wx_agv2_1" type="revolute">
-            <origin xyz="0.0 0.0 0.0" rpy="-${pi/4} 0.0 0.0"/>
+            <origin xyz="0.0 0.0 0.0" rpy="0 0.0 0"/>
             <parent link="${prefix}wx"/>
             <child link="${prefix}virtual_x_wx"/>
             <axis xyz="1 0 0"/>
-            <limit lower="0" upper="${pi/2}" effort="50" velocity="1.0" />
+            <limit lower="${-pi*2/9}" upper="${pi/9}" effort="50" velocity="1.0" />
       </joint>
       <joint name="${prefix}wx_agv2_2" type="fixed">
-            <origin xyz="0.0 0.0 0.0" rpy="${pi/4} 0.0 0.0"/>
+            <origin xyz="-0.25 0.0 0.0" rpy="0 0 0"/>
             <parent link="${prefix}virtual_x_wx"/>
             <child link="${prefix}virtual_y_wx"/>
       </joint>
       <joint name="${prefix}virtual_agv2" type="fixed">
-            <origin xyz="0.0 0.0 -1.18" rpy="0.0 0.0 0.0"/>
+            <origin xyz="0.0 0.0 -0.96" rpy="0.0 0.0 0.0"/>
             <parent link="${prefix}virtual_y_wx"/>
             <child link="${prefix}agv_link2"/>
       </joint>
@@ -565,7 +565,7 @@
 
     <!-- joint list -->
   <joint name="${prefix}agv_tocontrol_box" type="fixed">
-    <origin xyz="0.35 0 0.28" rpy="0 0 0" />
+    <origin xyz="-0.35 0 0.28" rpy="0 0 0" />
     <parent link="${prefix}agv_link" />
     <child link="${prefix}control_box" />
   </joint>
@@ -649,13 +649,13 @@
   <joint name="${prefix}link7_to_falan_joint" type="fixed">
     <parent link="${prefix}link_7" />
     <child link = "${prefix}falan" />
-    <origin xyz="0.0 0.0 0.126" rpy="${-PI/2.0} 0.0 ${PI/2.0}" />
+    <origin xyz="0.0 0.0 0.13" rpy="${-PI/2.0} 0.0 ${PI}" />
   </joint>
 
     <joint name="${prefix}falan_to_pan_joint" type="fixed">
     <parent link="${prefix}falan" />
     <child link = "${prefix}pan_link" />
-    <origin xyz="0.11 0.0 0" rpy="${PI/2.0} 0.0 ${PI/2.0}" />
+    <origin xyz="0.11 0.0 0" rpy="${PI} 0.0 ${PI/2.0}" />
   </joint>
 
     <link name="${prefix}pan_link">

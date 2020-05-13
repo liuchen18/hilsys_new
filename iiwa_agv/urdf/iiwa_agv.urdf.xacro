@@ -63,7 +63,7 @@
     </joint>
     
     <joint name="${prefix}base_x" type="prismatic">
-        <origin xyz="0.0 0.0 0.18" rpy="0.0 0.0 0.0"/>
+        <origin xyz="0.0 0.0 0.05" rpy="0.0 0.0 0.0"/>
         <parent link="${prefix}virtual_base"/>
         <child link="${prefix}virtual_x"/>
         <axis xyz="1.0 0.0 0.0"/>
@@ -92,16 +92,16 @@
       <inertia ixx="${agv_mass}" ixy="0.0" ixz="0.0" iyy="${agv_mass}" iyz="0.0" izz="${agv_mass}" />
     </inertial>
     <visual>
-      <origin xyz="0 0 0" rpy="0 0 0" />
+      <origin xyz="0 0 0" rpy="${PI/2.0} 0 0" />
       <geometry>
-        <box size="1.2 0.7 0.36"/>
+        <mesh filename="package://iiwa_agv/meshes/car.STL" />
       </geometry>
       <material name="blue"/>
     </visual>
     <collision>
-      <origin xyz="0 0 0" rpy="0 0 0" />
+      <origin xyz="0 0 0" rpy="${PI/2.0} 0 0" />
       <geometry>
-        <box size="1.2 0.7 0.36"/>
+        <mesh filename="package://iiwa_agv/meshes/car.STL" />
       </geometry>
     </collision>
   </link>
@@ -126,73 +126,6 @@
     </collision>
   </link>
 
-  <link name="${prefix}l_f_wheel">
-    <visual>
-       <geometry>
-          <mesh filename="package://iiwa_agv/meshes/wheel.STL" />
-      </geometry>
-    </visual>
-    <collision>
-      <geometry>
-        <mesh filename="package://iiwa_agv/meshes/wheel.STL" />
-      </geometry>
-    </collision>
-    <inertial>
-      <mass value="1" />
-      <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0" />
-    </inertial>
-  </link>
-
-  <link name="${prefix}r_f_wheel">
-    <visual>
-       <geometry>
-          <mesh filename="package://iiwa_agv/meshes/wheel.STL" />
-      </geometry>
-    </visual>
-    <collision>
-      <geometry>
-        <mesh filename="package://iiwa_agv/meshes/wheel.STL" />
-      </geometry>
-    </collision>
-    <inertial>
-      <mass value="1" />
-      <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0" />
-    </inertial>
-  </link>
-
-  <link name="${prefix}l_b_wheel">
-    <visual>
-       <geometry>
-          <mesh filename="package://iiwa_agv/meshes/wheel.STL" />
-      </geometry>
-    </visual>
-    <collision>
-      <geometry>
-        <mesh filename="package://iiwa_agv/meshes/wheel.STL" />
-      </geometry>
-    </collision>
-    <inertial>
-      <mass value="1" />
-      <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0" />
-    </inertial>
-  </link>
-
-  <link name="${prefix}r_b_wheel">
-    <visual>
-       <geometry>
-          <mesh filename="package://iiwa_agv/meshes/wheel.STL" />
-      </geometry>
-    </visual>
-    <collision>
-      <geometry>
-        <mesh filename="package://iiwa_agv/meshes/wheel.STL" />
-      </geometry>
-    </collision>
-    <inertial>
-      <mass value="1" />
-      <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0" />
-    </inertial>
-  </link>
 
   <link name="${prefix}base_link">
     <visual>
@@ -350,20 +283,20 @@
 
   <link name="${prefix}pan_link">
     <visual>
-      <origin xyz="0 0 0" rpy="${PI/2.0} 0 0" />
+      <origin xyz="0 0 0" rpy="0 0 0" />
       <geometry>
         <mesh filename="package://iiwa_agv/meshes/pan.STL"/>
       </geometry>
       <material name="black"/>
     </visual>
     <collision>
-      <origin xyz="0 0 0" rpy="${PI/2.0} 0 0" />
+      <origin xyz="0 0 0" rpy="0 0 0" />
       <geometry>
         <mesh filename="package://iiwa_agv/meshes/pan.STL"/>
       </geometry>
     </collision>
     <xacro:cylinder_inertial radius="0.05" length="0.01" mass="0.01">
-      <origin xyz="0.0 0.0 0.0" rpy="${PI/2.0} 0 0" />
+      <origin xyz="0.0 0.0 0.0" rpy="0 0 0" />
     </xacro:cylinder_inertial>
   </link>
 
@@ -389,14 +322,14 @@
 
   <link name="${prefix}xiao_arm1_link">
     <visual>
-      <origin xyz="0 ${xiao_arm_offset_y} 0.02" rpy="${PI/2.0} 0 0" />
+      <origin xyz="0 0 0" rpy="0 0 0" />
       <geometry>
         <mesh filename="package://iiwa_agv/meshes/xiao_arm.STL"/>
       </geometry>
       <material name="white"/>
     </visual>
     <collision>
-      <origin xyz="0 ${xiao_arm_offset_y} 0.02" rpy="${PI/2.0} 0 0" />
+      <origin xyz="0 0 0" rpy="0 0 0" />
       <geometry>
         <mesh filename="package://iiwa_agv/meshes/xiao_arm.STL"/>
       </geometry>
@@ -408,14 +341,14 @@
 
   <link name="${prefix}xiao_arm2_link">
     <visual>
-      <origin xyz="${-xiao_arm_offset_x} ${xiao_arm_offset_y} 0.02" rpy="${PI/2.0} 0 0" />
+      <origin xyz="0 0 0" rpy="0 0 0" />
       <geometry>
         <mesh filename="package://iiwa_agv/meshes/xiao_arm.STL"/>
       </geometry>
       <material name="green"/>
     </visual>
     <collision>
-      <origin xyz="${-xiao_arm_offset_x} ${xiao_arm_offset_y} 0.02" rpy="${PI/2.0} 0 0" />
+      <origin xyz="0 0 0" rpy="0 0 0" />
       <geometry>
         <mesh filename="package://iiwa_agv/meshes/xiao_arm.STL"/>
       </geometry>
@@ -427,7 +360,7 @@
 
   <link name="${prefix}xiangji_link">
     <visual>
-      <origin xyz="0.0 0.0 0.1" rpy="0 0 0" />
+      <origin xyz="0.0 0.0 0.0" rpy="0 0 0" />
       <geometry>
         <mesh filename="package://iiwa_agv/meshes/xiangji.STL"/>
       </geometry>
@@ -449,37 +382,13 @@
   <!-- joint list -->
 
   <joint name="${prefix}agv_to_base_joint" type="fixed">
-    <origin xyz="0.2 0 0.18" rpy="0 0 ${-PI/2.0}" />
+    <origin xyz="-0.2 0 0.3" rpy="0 0 0" />
     <parent link="${prefix}agv_link" />
     <child link="${prefix}base_link" />
   </joint>
 
-  <joint name="${prefix}agv_to_l_f_wheel" type="fixed">
-    <origin xyz="0.5 0.37 -0.1" rpy="${PI/2.0} ${PI/2.0} 0" />
-    <parent link="${prefix}agv_link" />
-    <child link="${prefix}l_f_wheel" />
-  </joint>
-
-  <joint name="${prefix}agv_to_r_f_wheel" type="fixed">
-    <origin xyz="-0.5 0.37 -0.1" rpy="${PI/2.0} ${PI/2.0} 0" />
-    <parent link="${prefix}agv_link" />
-    <child link="${prefix}r_f_wheel" />
-  </joint>
-
-  <joint name="${prefix}agv_to_l_b_wheel" type="fixed">
-    <origin xyz="0.5 -0.37 -0.1" rpy="${PI/2.0} ${PI/2.0} 0" />
-    <parent link="${prefix}agv_link" />
-    <child link="${prefix}l_b_wheel" />
-  </joint>
-
-  <joint name="${prefix}agv_to_r_b_wheel" type="fixed">
-    <origin xyz="-0.5 -0.37 -0.1" rpy="${PI/2.0} ${PI/2.0} 0" />
-    <parent link="${prefix}agv_link" />
-    <child link="${prefix}r_b_wheel" />
-  </joint>
-
   <joint name="${prefix}agv_tocontrol_box" type="fixed">
-    <origin xyz="-0.35 0 0.28" rpy="0 0 0" />
+    <origin xyz="0.35 0 0.41" rpy="0 0 0" />
     <parent link="${prefix}agv_link" />
     <child link="${prefix}control_box" />
   </joint>
@@ -550,31 +459,31 @@
   <joint name="${prefix}link7_to_falan_joint" type="fixed">
     <parent link="${prefix}link_7" />
     <child link = "${prefix}falan" />
-    <origin xyz="0.0 0.0 0.126" rpy="${-PI/2.0} 0.0 ${PI/2.0}" />
+    <origin xyz="0.0 0.0 0.13" rpy="${-PI/2.0} 0.0 ${PI}" />
   </joint>
 
   <joint name="${prefix}falan_to_pan_joint" type="fixed">
     <parent link="${prefix}falan" />
     <child link = "${prefix}pan_link" />
-    <origin xyz="0.11 0.0 0" rpy="${PI/2.0} 0.0 ${PI/2.0}" />
+    <origin xyz="0.11 0.0 0" rpy="${PI} 0.0 ${PI/2.0}" />
   </joint>
 
   <joint name="${prefix}pan_to_xiao_arm1_joint" type="fixed">
     <parent link="${prefix}pan_link" />
     <child link = "${prefix}xiao_arm1_link" />
-    <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+    <origin xyz="0.0 0.0 -0.47" rpy="0.0 0.0 0.0" />
   </joint>
 
   <joint name="${prefix}pan_to_xiao_arm2_joint" type="fixed">
     <parent link="${prefix}pan_link" />
     <child link = "${prefix}xiao_arm2_link" />
-    <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+    <origin xyz="-0.15 0.0 -0.47" rpy="0.0 0.0 0.0" />
   </joint>
 
   <joint name="${prefix}pan_to_xiangji_joint" type="fixed">
     <parent link="${prefix}pan_link" />
     <child link = "${prefix}xiangji_link" />
-    <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+    <origin xyz="0.0 0.065 -0.1" rpy="-1.570796 0.0 0.0" />
   </joint>
 
   <!-- end of joint list -->

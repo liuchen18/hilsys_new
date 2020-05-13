@@ -39,6 +39,7 @@
     <!--DISABLE COLLISIONS: By default it is assumed that any link of the robot could potentially come into collision with any other link in the robot. This tag disables collision checking between a specified pair of links. -->
     <disable_collisions link1="agv_link" link2="agv_link2" reason="Adjacent" />
     <disable_collisions link1="agv_link" link2="base_link" reason="Adjacent" />
+    <disable_collisions link1="agv_link" link2="control_box" reason="Adjacent" />
     <disable_collisions link1="agv_link" link2="l_b_wheel" reason="Adjacent" />
     <disable_collisions link1="agv_link" link2="l_f_wheel" reason="Adjacent" />
     <disable_collisions link1="agv_link" link2="link_1" reason="Never" />
@@ -47,14 +48,17 @@
     <disable_collisions link1="agv_link" link2="r_b_wheel" reason="Adjacent" />
     <disable_collisions link1="agv_link" link2="r_f_wheel" reason="Adjacent" />
     <disable_collisions link1="agv_link" link2="wx" reason="Never" />
+    <disable_collisions link1="agv_link2" link2="control_box" reason="Never" />
     <disable_collisions link1="agv_link2" link2="l_b_wheel2" reason="Adjacent" />
     <disable_collisions link1="agv_link2" link2="l_f_wheel2" reason="Adjacent" />
     <disable_collisions link1="agv_link2" link2="link_1" reason="Never" />
     <disable_collisions link1="agv_link2" link2="link_2" reason="Never" />
     <disable_collisions link1="agv_link2" link2="link_3" reason="Never" />
+    <disable_collisions link1="agv_link2" link2="link_4" reason="Never" />
     <disable_collisions link1="agv_link2" link2="r_b_wheel2" reason="Adjacent" />
     <disable_collisions link1="agv_link2" link2="r_f_wheel2" reason="Adjacent" />
     <disable_collisions link1="agv_link2" link2="wx" reason="Adjacent" />
+    <disable_collisions link1="base_link" link2="control_box" reason="Never" />
     <disable_collisions link1="base_link" link2="l_b_wheel" reason="Never" />
     <disable_collisions link1="base_link" link2="l_b_wheel2" reason="Never" />
     <disable_collisions link1="base_link" link2="l_f_wheel" reason="Never" />
@@ -68,6 +72,33 @@
     <disable_collisions link1="base_link" link2="r_f_wheel" reason="Never" />
     <disable_collisions link1="base_link" link2="r_f_wheel2" reason="Never" />
     <disable_collisions link1="base_link" link2="wx" reason="Never" />
+    <disable_collisions link1="control_box" link2="l_b_wheel" reason="Never" />
+    <disable_collisions link1="control_box" link2="l_b_wheel2" reason="Never" />
+    <disable_collisions link1="control_box" link2="l_f_wheel" reason="Never" />
+    <disable_collisions link1="control_box" link2="l_f_wheel2" reason="Never" />
+    <disable_collisions link1="control_box" link2="link_1" reason="Never" />
+    <disable_collisions link1="control_box" link2="link_2" reason="Never" />
+    <disable_collisions link1="control_box" link2="r_b_wheel" reason="Never" />
+    <disable_collisions link1="control_box" link2="r_b_wheel2" reason="Never" />
+    <disable_collisions link1="control_box" link2="r_f_wheel" reason="Never" />
+    <disable_collisions link1="control_box" link2="r_f_wheel2" reason="Never" />
+    <disable_collisions link1="control_box" link2="wx" reason="Never" />
+    <disable_collisions link1="falan" link2="l_b_wheel" reason="Never" />
+    <disable_collisions link1="falan" link2="l_b_wheel2" reason="Never" />
+    <disable_collisions link1="falan" link2="l_f_wheel" reason="Never" />
+    <disable_collisions link1="falan" link2="l_f_wheel2" reason="Never" />
+    <disable_collisions link1="falan" link2="link_1" reason="Never" />
+    <disable_collisions link1="falan" link2="link_2" reason="Never" />
+    <disable_collisions link1="falan" link2="link_3" reason="Never" />
+    <disable_collisions link1="falan" link2="link_4" reason="Never" />
+    <disable_collisions link1="falan" link2="link_6" reason="Never" />
+    <disable_collisions link1="falan" link2="link_7" reason="Adjacent" />
+    <disable_collisions link1="falan" link2="pan_link" reason="Adjacent" />
+    <disable_collisions link1="falan" link2="r_b_wheel2" reason="Never" />
+    <disable_collisions link1="falan" link2="r_f_wheel2" reason="Never" />
+    <disable_collisions link1="falan" link2="xiangji_link" reason="Never" />
+    <disable_collisions link1="falan" link2="xiao_arm1_link" reason="Never" />
+    <disable_collisions link1="falan" link2="xiao_arm2_link" reason="Default" />
     <disable_collisions link1="l_b_wheel" link2="l_f_wheel" reason="Never" />
     <disable_collisions link1="l_b_wheel" link2="link_1" reason="Never" />
     <disable_collisions link1="l_b_wheel" link2="link_2" reason="Never" />
@@ -76,8 +107,10 @@
     <disable_collisions link1="l_b_wheel" link2="link_5" reason="Never" />
     <disable_collisions link1="l_b_wheel" link2="link_6" reason="Never" />
     <disable_collisions link1="l_b_wheel" link2="link_7" reason="Never" />
+    <disable_collisions link1="l_b_wheel" link2="pan_link" reason="Never" />
     <disable_collisions link1="l_b_wheel" link2="r_b_wheel" reason="Never" />
     <disable_collisions link1="l_b_wheel" link2="r_f_wheel" reason="Never" />
+    <disable_collisions link1="l_b_wheel" link2="r_f_wheel2" reason="Never" />
     <disable_collisions link1="l_b_wheel" link2="wx" reason="Never" />
     <disable_collisions link1="l_b_wheel2" link2="l_f_wheel2" reason="Never" />
     <disable_collisions link1="l_b_wheel2" link2="link_1" reason="Never" />
@@ -92,6 +125,9 @@
     <disable_collisions link1="l_b_wheel2" link2="r_f_wheel2" reason="Never" />
     <disable_collisions link1="l_b_wheel2" link2="wx" reason="Never" />
     <disable_collisions link1="l_b_wheel2" link2="xiangji_link" reason="Never" />
+    <disable_collisions link1="l_b_wheel2" link2="xiao_arm1_link" reason="Never" />
+    <disable_collisions link1="l_b_wheel2" link2="xiao_arm2_link" reason="Never" />
+    <disable_collisions link1="l_f_wheel" link2="l_f_wheel2" reason="Never" />
     <disable_collisions link1="l_f_wheel" link2="link_1" reason="Never" />
     <disable_collisions link1="l_f_wheel" link2="link_2" reason="Never" />
     <disable_collisions link1="l_f_wheel" link2="link_3" reason="Never" />
@@ -99,8 +135,10 @@
     <disable_collisions link1="l_f_wheel" link2="link_5" reason="Never" />
     <disable_collisions link1="l_f_wheel" link2="link_6" reason="Never" />
     <disable_collisions link1="l_f_wheel" link2="link_7" reason="Never" />
+    <disable_collisions link1="l_f_wheel" link2="pan_link" reason="Never" />
     <disable_collisions link1="l_f_wheel" link2="r_b_wheel" reason="Never" />
     <disable_collisions link1="l_f_wheel" link2="r_f_wheel" reason="Never" />
+    <disable_collisions link1="l_f_wheel" link2="r_f_wheel2" reason="Never" />
     <disable_collisions link1="l_f_wheel" link2="wx" reason="Never" />
     <disable_collisions link1="l_f_wheel2" link2="link_1" reason="Never" />
     <disable_collisions link1="l_f_wheel2" link2="link_2" reason="Never" />
@@ -113,6 +151,9 @@
     <disable_collisions link1="l_f_wheel2" link2="r_b_wheel2" reason="Never" />
     <disable_collisions link1="l_f_wheel2" link2="r_f_wheel2" reason="Never" />
     <disable_collisions link1="l_f_wheel2" link2="wx" reason="Never" />
+    <disable_collisions link1="l_f_wheel2" link2="xiangji_link" reason="Never" />
+    <disable_collisions link1="l_f_wheel2" link2="xiao_arm1_link" reason="Never" />
+    <disable_collisions link1="l_f_wheel2" link2="xiao_arm2_link" reason="Never" />
     <disable_collisions link1="link_1" link2="link_2" reason="Adjacent" />
     <disable_collisions link1="link_1" link2="link_3" reason="Never" />
     <disable_collisions link1="link_1" link2="link_4" reason="Never" />
@@ -145,20 +186,14 @@
     <disable_collisions link1="link_3" link2="r_b_wheel2" reason="Never" />
     <disable_collisions link1="link_3" link2="r_f_wheel" reason="Never" />
     <disable_collisions link1="link_3" link2="r_f_wheel2" reason="Never" />
-    <disable_collisions link1="link_3" link2="xiangji_link" reason="Never" />
-    <disable_collisions link1="link_3" link2="xiao_arm1_link" reason="Never" />
-    <disable_collisions link1="link_3" link2="xiao_arm2_link" reason="Never" />
     <disable_collisions link1="link_4" link2="link_5" reason="Adjacent" />
     <disable_collisions link1="link_4" link2="link_6" reason="Never" />
     <disable_collisions link1="link_4" link2="link_7" reason="Never" />
-    <disable_collisions link1="link_4" link2="pan_link" reason="Never" />
     <disable_collisions link1="link_4" link2="r_b_wheel" reason="Never" />
     <disable_collisions link1="link_4" link2="r_b_wheel2" reason="Never" />
     <disable_collisions link1="link_4" link2="r_f_wheel" reason="Never" />
     <disable_collisions link1="link_4" link2="r_f_wheel2" reason="Never" />
     <disable_collisions link1="link_4" link2="xiangji_link" reason="Never" />
-    <disable_collisions link1="link_4" link2="xiao_arm1_link" reason="Never" />
-    <disable_collisions link1="link_4" link2="xiao_arm2_link" reason="Never" />
     <disable_collisions link1="link_5" link2="link_6" reason="Adjacent" />
     <disable_collisions link1="link_5" link2="link_7" reason="Never" />
     <disable_collisions link1="link_5" link2="r_b_wheel" reason="Never" />
@@ -166,19 +201,16 @@
     <disable_collisions link1="link_5" link2="r_f_wheel" reason="Never" />
     <disable_collisions link1="link_5" link2="r_f_wheel2" reason="Never" />
     <disable_collisions link1="link_5" link2="xiangji_link" reason="Never" />
+    <disable_collisions link1="link_5" link2="xiao_arm2_link" reason="Never" />
     <disable_collisions link1="link_6" link2="link_7" reason="Adjacent" />
     <disable_collisions link1="link_6" link2="pan_link" reason="Never" />
-    <disable_collisions link1="link_6" link2="r_b_wheel" reason="Never" />
     <disable_collisions link1="link_6" link2="r_b_wheel2" reason="Never" />
-    <disable_collisions link1="link_6" link2="r_f_wheel" reason="Never" />
     <disable_collisions link1="link_6" link2="r_f_wheel2" reason="Never" />
     <disable_collisions link1="link_6" link2="xiangji_link" reason="Never" />
     <disable_collisions link1="link_6" link2="xiao_arm1_link" reason="Never" />
     <disable_collisions link1="link_6" link2="xiao_arm2_link" reason="Never" />
-    <disable_collisions link1="link_7" link2="pan_link" reason="Adjacent" />
-    <disable_collisions link1="link_7" link2="r_b_wheel" reason="Never" />
+    <disable_collisions link1="link_7" link2="pan_link" reason="Never" />
     <disable_collisions link1="link_7" link2="r_b_wheel2" reason="Never" />
-    <disable_collisions link1="link_7" link2="r_f_wheel" reason="Never" />
     <disable_collisions link1="link_7" link2="r_f_wheel2" reason="Never" />
     <disable_collisions link1="link_7" link2="xiangji_link" reason="Never" />
     <disable_collisions link1="link_7" link2="xiao_arm1_link" reason="Never" />
@@ -193,11 +225,10 @@
     <disable_collisions link1="r_b_wheel2" link2="r_f_wheel2" reason="Never" />
     <disable_collisions link1="r_b_wheel2" link2="wx" reason="Never" />
     <disable_collisions link1="r_b_wheel2" link2="xiangji_link" reason="Never" />
-    <disable_collisions link1="r_b_wheel2" link2="xiao_arm1_link" reason="Never" />
     <disable_collisions link1="r_b_wheel2" link2="xiao_arm2_link" reason="Never" />
     <disable_collisions link1="r_f_wheel" link2="wx" reason="Never" />
     <disable_collisions link1="r_f_wheel2" link2="wx" reason="Never" />
-    <disable_collisions link1="r_f_wheel2" link2="xiangji_link" reason="Never" />
+    <disable_collisions link1="r_f_wheel2" link2="xiao_arm1_link" reason="Never" />
     <disable_collisions link1="r_f_wheel2" link2="xiao_arm2_link" reason="Never" />
     <disable_collisions link1="xiangji_link" link2="xiao_arm1_link" reason="Never" />
     <disable_collisions link1="xiangji_link" link2="xiao_arm2_link" reason="Never" />

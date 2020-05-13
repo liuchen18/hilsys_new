@@ -479,7 +479,7 @@ class SerialIKSolver:
 
         self._Z_OFFSET = 0.475 # default to 0.475, will be changed in listen_to_fixed_tf
 
-        self._T_up_to_wx_no_alpha = Translation('x', 0.03) * Translation('z', 0.63) * Rotation('y', np.pi/4.0) * Rotation('z', -np.pi/2.0)
+        self._T_up_to_wx_no_alpha = Translation('x', 0.25) * Translation('z', 0.185) * Rotation('y', 70.0/180.0*np.pi) * Rotation('z', -np.pi/2.0)
 
         # print "In Construction"
         # print self._T_up_to_wx_no_alpha

@@ -1,6 +1,6 @@
 <package>
 
-  <name>sys_moveit_config</name>
+  <name>sim_sys_moveit_config</name>
   <version>0.3.0</version>
   <description>
      An automatically generated package with all the configuration and launch files for using the sys with the MoveIt! Motion Planning Framework
