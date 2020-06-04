@@ -137,21 +137,29 @@
         </visual>
     </link>
 
+     <!--link name="connect_link">
+        <inertial>
+            <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+            <mass value="${little_mass}"/>
+            <inertia ixx="${little_mass}" ixy="0.0" ixz="0.0" iyy="${little_mass}" iyz="0.0" izz="${little_mass}"/>
+        </inertial>
+    </link-->
+
     <link name="wx_visual_link">
         <inertial>
-            <origin xyz="0.0 0.0 0.0" rpy="${110.0/180.0*PI} 0.0 ${-PI/2.0}"/>
+            <origin xyz="0.0 0.0 0.0" rpy="0 0 0"/>
             <mass value="${wx_mass}"/>
             <inertia ixx="${wx_mass}" ixy="0.0" ixz="0.0" iyy="${wx_mass}" iyz="0.0" izz="${wx_mass}"/>
         </inertial>
         <visual>
-            <origin xyz="0.0 0.0 0.0" rpy="${110.0/180.0*PI} 0.0 ${-PI/2.0}"/>
+            <origin xyz="0.0 0.0 0.0" rpy="0 0 0"/>
             <geometry>
                 <mesh filename="package://parallel_car/meshes/MZ.STL" />
             </geometry>
             <material name="white"/>
         </visual>
         <collision>
-            <origin xyz="0.0 0.0 0.0" rpy="${110.0/180.0*PI} 0.0 ${-PI/2.0}"/>
+            <origin xyz="0.0 0.0 0.0" rpy="0 0 0"/>
             <geometry>
                 <mesh filename="package://parallel_car/meshes/MZ.STL" />
             </geometry>
@@ -184,6 +192,26 @@
                 <box size="${little_width} ${little_width} ${little_width}"/>
             </geometry>
         </visual>
+    </link>
+
+    <link name="control_box">
+        <inertial>
+            <origin xyz="0.0 0.0 0.0" rpy="0 0 0"/>
+            <mass value="0.5"/>
+            <inertia ixx="0.5" ixy="0.0" ixz="0.0" iyy="0.5" iyz="0.0" izz="0.5"/>
+        </inertial>
+        <visual>
+            <origin xyz="0.0 0.0 0.0" rpy="0 0 0"/>
+            <geometry>
+                <box size="0.5 0.7 0.25"/>
+            </geometry>
+            <material name="grey"/>
+        </visual>
+        <collision>
+            <geometry>
+                <box size="0.5 0.7 0.25"/>
+            </geometry>
+        </collision>
     </link>
 
     <!-- up and down links -->
@@ -234,7 +262,7 @@
     <!-- joints -->
 
     <joint name="car_to_barX" type="prismatic">
-        <origin xyz="0.0 0.0 0.18" rpy="0.0 0.0 0.0"/>
+        <origin xyz="0.3 0.0 0.18" rpy="0.0 0.0 0.0"/>
         <parent link="car_link"/>
         <child link="barX_link"/>
         <axis xyz="1.0 0.0 0.0"/>
@@ -281,11 +309,14 @@
         <limit lower="${-PI/2.0}" upper="${PI/2.0}" effort="50.0" velocity="2.0"/>
     </joint>
 
-    <joint name="littleZ_to_wx_visual" type="fixed">
-        <origin xyz="0.35 0.0 0.25" rpy="0.0 0.0 0.0"/>
+    <joint name="littleZ_to_wx_visual" type="continuous">
+        <origin xyz="0.5 0.0 0.25" rpy="${110.0/180.0*PI} 0.0 ${-PI/2.0}"/>
         <parent link="littleZ_link"/>
         <child link="wx_visual_link"/>
+        <axis xyz="0 0 1.0"/>
     </joint>
+
+    <!--origin xyz="0.0 0.0 0.0" rpy="${110.0/180.0*PI} 0.0 ${-PI/2.0}"/-->
 
     <joint name="wx_visual_to_wx_medium" type="fixed">
         <origin xyz="-0.1 0.0 -0.065" rpy="0.0 ${70.0/180.0*PI} 0.0"/>
@@ -302,9 +333,15 @@
     <!-- up and down joints -->
 
     <joint name="car_to_down" type="fixed">
-        <origin xyz="0.0 0.0 0.18" rpy="0.0 0.0 0.0"/>
+        <origin xyz="0.3 0.0 0.18" rpy="0.0 0.0 0.0"/>
         <parent link="car_link"/>
         <child link="down_link"/>
+    </joint>
+
+    <joint name="car_to_control_box" type="fixed">
+        <origin xyz="-0.35 0.0 0.3" rpy="0.0 0.0 0.0"/>
+        <parent link="car_link"/>
+        <child link="control_box"/>
     </joint>
 
     <joint name="littleZ_to_up" type="fixed">

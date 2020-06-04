@@ -208,3 +208,5 @@ ${catkin_INCLUDE_DIRS}
 
 ## Add folders to be run by python nosetests
 # catkin_add_nosetests(test)
+add_executable(rotate_node src/rotate_node.cpp)
+target_link_libraries(rotate_node ${catkin_LIBRARIES})

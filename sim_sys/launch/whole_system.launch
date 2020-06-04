@@ -52,9 +52,13 @@
     <node name="parallel_car_controller_spawner" pkg="controller_manager" type="spawner" 
       args="--namespace=/parallel_car
         joint_state_controller
-        support_and_mech_controller"
+        support_and_mech_controller
+        wx_controller"
       respawn="false" output="screen"
     />
+    <node name="rotate_node" pkg="parallel_car" type="rotate_node">
+      <remap from="command" to="wx_controller/command"/>
+    </node>
 
   </group>
 

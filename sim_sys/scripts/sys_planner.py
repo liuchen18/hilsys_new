@@ -157,7 +157,7 @@ class trajectory_class():
             return desired_pose
         elif type == 2:
             if time <10:
-                desired_pose.position.x=5-time*0.3
+                desired_pose.position.x=4-time*0.25
                 desired_pose.position.y=0
                 desired_pose.position.z=0.0
                 desired_pose.orientation.x=0
@@ -165,9 +165,9 @@ class trajectory_class():
                 desired_pose.orientation.z=0.707
                 desired_pose.orientation.w=0.707
                 return desired_pose
-            else:
-                desired_pose.position.x=2*math.cos(2*math.pi/40*(time-10))
-                desired_pose.position.y=2*math.sin(2*math.pi/40*(time-10))
+            elif time < 20:
+                desired_pose.position.x=1.5*math.cos(2*math.pi/40*(time-10))
+                desired_pose.position.y=1.5*math.sin(2*math.pi/40*(time-10))
                 desired_pose.position.z=0.0
 
                 #interpolation of the quaternion:Spherical linear interpolation
@@ -179,9 +179,15 @@ class trajectory_class():
                     return desired_pose
                 else:
                     rospy.logerr('input time should be less than period + 10 s, current period is '+str(period))
+            else:
+                desired_pose.position.x=0
+                desired_pose.position.y=1.5-(time-20)*0.17
+                desired_pose.position.z=0.0
+                desired_pose.orientation=Quaternion(0,0,1,1e-6) 
+                return desired_pose
         elif type == 3:
             if time <10:
-                desired_pose.position.x=5-time*0.3
+                desired_pose.position.x=4-time*0.25
                 desired_pose.position.y=0
                 desired_pose.position.z=0.0
                 desired_pose.orientation.x=0
@@ -189,9 +195,9 @@ class trajectory_class():
                 desired_pose.orientation.z=0.707
                 desired_pose.orientation.w=0.707
                 return desired_pose
-            else:
-                desired_pose.position.x=2*math.cos(2*math.pi/40*(time-10))
-                desired_pose.position.y=-2*math.sin(2*math.pi/40*(time-10))
+            elif time<20:
+                desired_pose.position.x=1.5*math.cos(2*math.pi/40*(time-10))
+                desired_pose.position.y=-1.5*math.sin(2*math.pi/40*(time-10))
                 desired_pose.position.z=0.0
 
                 #interpolation of the quaternion:Spherical linear interpolation
@@ -203,6 +209,13 @@ class trajectory_class():
                     return desired_pose
                 else:
                     rospy.logerr('input time should be less than period + 10 s, current period is '+str(period))
+            else:
+                desired_pose.position.x=0
+                desired_pose.position.y=-1.5+(time-20)*0.05
+                desired_pose.position.z=0.0
+                desired_pose.orientation=Quaternion(0,0,0,1) 
+                return desired_pose
+        
     
     def interpolation(self,start_orientation,end_orientation,t):
         '''compute the current orientation using Spherical linear interpolation method. return a Quaternion
@@ -274,7 +287,7 @@ class planner_class():
         self.sys=sys_class()
         self.debug=False
         self.time_duration=0.2 # add a point from the desired trajectory every time_duration
-        self.total_time=20.0 # total time of the trajectory
+        self.total_time=25.0 # total time of the trajectory
 
         # init the txt files
         with open('/home/chen/ws_chen/src/hilsys/sim_sys/data/mbx_planned_trajectory.txt','w') as f:
@@ -309,7 +322,7 @@ class planner_class():
         this function generate the movement of wx with nutation according to the joint values and nutation function. return time and pose
         '''
         nutation_pose=self.trajectory.nutation(time)
-        nutation_pose.position.z=1.36
+        #nutation_pose.position.z=1.36
         wx_pose=Pose()
         wx_pose.position.x=-(joint_values[1]+3)/2 #this means the x position of the car
         wx_pose.position.y=-joint_values[2]/2 #this means the y position of the car
@@ -332,7 +345,7 @@ class planner_class():
         way_points=[]
         rospy.loginfo('generate way points of the path')
         while count*self.time_duration < self.total_time:
-            desired_pose=self.trajectory.desired_trajectory(count*self.time_duration,3,self.total_time-10) #second param is trajectory type
+            desired_pose=self.trajectory.desired_trajectory(count*self.time_duration,type=3) #second param is trajectory type
             way_points.append(copy.deepcopy(desired_pose))
             count+=1
         

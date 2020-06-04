@@ -27,12 +27,16 @@ if __name__ == "__main__":
     seri_ik = SerialIKSolver(run_env=RUN_ENV)
 
     #trajectory 1
-    mbx_file_path = "/home/chen/ws_chen/src/hilsys/sim_sys/data/mbx_planned_trajectory_cezheng.txt"
-    fwx_file_path = '/home/chen/ws_chen/src/hilsys/sim_sys/data/fwx_planned_trajectory_cezheng.txt'
+    #mbx_file_path = "/home/chen/ws_chen/src/hilsys/sim_sys/data/mbx_planned_trajectory_cezheng.txt"
+    #fwx_file_path = '/home/chen/ws_chen/src/hilsys/sim_sys/data/fwx_planned_trajectory_cezheng.txt'
 
     #trajectory 2
     #mbx_file_path = "/home/chen/ws_chen/src/hilsys/sim_sys/data/mbx_planned_trajectory_zheng.txt"
     #fwx_file_path = '/home/chen/ws_chen/src/hilsys/sim_sys/data/fwx_planned_trajectory_zheng.txt'
+
+    #trajectory 3
+    mbx_file_path = "/home/chen/ws_chen/src/hilsys/sim_sys/data/mbx_planned_trajectory_cehou.txt"
+    fwx_file_path = '/home/chen/ws_chen/src/hilsys/sim_sys/data/fwx_planned_trajectory_cehou.txt'
     
     driver = BaseAndMechDriver(file_path=mbx_file_path)
     exe = Executor(file_path=fwx_file_path)

@@ -1,5 +1,12 @@
 /parallel_car:
     # Publish all joint states -----------------------------------
+    wx_controller:
+      type: "position_controllers/JointPositionController"
+      joint: littleZ_to_wx_visual
+      pid: 
+        p: 100.0
+        i: 0.01
+        d: 10.0
     joint_state_controller:
       type: joint_state_controller/JointStateController
       publish_rate: 50  
