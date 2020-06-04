@@ -2,7 +2,7 @@
     # Publish all joint states -----------------------------------
     wx_controller:
       type: "position_controllers/JointPositionController"
-      joint: littleZ_to_wx_visual
+      joint: rotate_joint
       pid: 
         p: 100.0
         i: 0.01

@@ -63,10 +63,10 @@
 
     <transmission name="rotate_trans">
         <type>transmission_interface/SimpleTransmission</type>
-        <joint name="littleZ_to_wx_visual">
+        <joint name="rotate_joint">
             <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
         </joint>
-        <actuator name="littleZ_to_wx_visual_motor">
+        <actuator name="rotate_joint_motor">
             <mechanicalReduction>1</mechanicalReduction>
         </actuator>
     </transmission>
