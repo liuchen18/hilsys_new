@@ -7,7 +7,12 @@ project(sim_sys)
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
-find_package(catkin REQUIRED)
+find_package(catkin REQUIRED COMPONENTS
+  roscpp
+  moveit_msgs
+  moveit_core
+  moveit_ros_planning_interface
+  )
 
 ## System dependencies are found with CMake's conventions
 # find_package(Boost REQUIRED COMPONENTS system)
@@ -99,9 +104,7 @@ find_package(catkin REQUIRED)
 ## CATKIN_DEPENDS: catkin_packages dependent projects also need
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
-#  INCLUDE_DIRS include
-#  LIBRARIES sim_sys
-#  CATKIN_DEPENDS other_catkin_pkg
+  CATKIN_DEPENDS roscpp moveit_msgs moveit_core moveit_ros_planning_interface
 #  DEPENDS system_lib
 )
 
@@ -111,10 +114,8 @@ catkin_package(
 
 ## Specify additional locations of header files
 ## Your package locations should be listed before other locations
-include_directories(
-# include
-# ${catkin_INCLUDE_DIRS}
-)
+include_directories(include ${catkin_INCLUDE_DIRS})
+include_directories("/usr/include/eigen3")
 
 ## Declare a C++ library
 # add_library(${PROJECT_NAME}
@@ -200,3 +201,8 @@ include_directories(
 
 ## Add folders to be run by python nosetests
 # catkin_add_nosetests(test)
+add_executable(plan_path src/planning.cpp)
+target_link_libraries(plan_path ${catkin_LIBRARIES})
+
+add_executable(test src/test.cpp)
+target_link_libraries(test ${catkin_LIBRARIES})

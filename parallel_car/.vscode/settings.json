@@ -1,0 +1,12 @@
+{
+    "python.autoComplete.extraPaths": [
+        "/home/fjw/dual_ws/devel/lib/python2.7/dist-packages",
+        "/opt/ros/melodic/lib/python2.7/dist-packages"
+    ],
+
+    "python.linting.pylintArgs": [
+        "--disable=no-name-in-module","--disable=import-error",
+        "--disable=wrong-import-order","--disable=ungrouped-imports",
+        "--load-plugins",
+    ],
+}
