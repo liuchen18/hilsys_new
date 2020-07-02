@@ -1,4 +1,4 @@
-#define DEBUG
+//#define DEBUG
 
 #include "ros/ros.h"
 #include <Eigen/Dense>
@@ -127,8 +127,6 @@ std::vector<double> compute_next_cartisian_velocities(bool &done){
         compute_x_coffe(ax,bx,cx,dx,ex,fx,index_point);
         compute_y_coffe(ay,by,cy,dy,ey,fy,index_point);
         compute_z_coffe(az,bz,cz,dz,ez,fz,index_point);
-        std::cout<<"x: "<<ax<<" "<<bx<<" "<<cx<<" "<<dx<<" "<<ex<<" "<<fx<<std::endl;
-        std::cout<<"y: "<<ay<<" "<<by<<" "<<cy<<" "<<dy<<" "<<ey<<" "<<fy<<std::endl;
 
         initialize_quaternion(current_point_orientation,current_point[3],current_point[4],current_point[5],current_point[6]);
         initialize_quaternion(next_point_orientation,next_point[3],next_point[4],next_point[5],next_point[6]);
@@ -145,12 +143,9 @@ std::vector<double> compute_next_cartisian_velocities(bool &done){
     velocities.push_back(vx);
     velocities.push_back(vy);
     velocities.push_back(vz);
-    ROS_INFO("translate velocity conpelited");
 
-    ROS_INFO(" got way point");
     double coff=2.0;
     geometry_msgs::Quaternion current_inter_p=slerp(current_point_orientation,next_point_orientation,index*dt);
-    ROS_INFO("got current q");
     geometry_msgs::Quaternion last_inter_p,next_inter_p;
     if(index>=1){
         last_inter_p=slerp(current_point_orientation,next_point_orientation,(index-1)*dt);
@@ -166,9 +161,7 @@ std::vector<double> compute_next_cartisian_velocities(bool &done){
         last_inter_p=slerp(current_point_orientation,next_point_orientation,index*dt);
         coff-=1.0;
     }
-    ROS_INFO("got last and next q");
     geometry_msgs::Quaternion d_q=get_derivate(next_inter_p,last_inter_p,coff,dt);
-    ROS_INFO("got q derivate! ");
 
     geometry_msgs::Quaternion q_star(current_inter_p);
     q_star.x*=-1.0;
@@ -181,9 +174,15 @@ std::vector<double> compute_next_cartisian_velocities(bool &done){
     velocities.emplace_back(2*w[3]);
     
     index+=1;
-    std::cout<<"point index: "<<index_point<<std::endl;
     return velocities;
 
+}
+void print(std::vector<double> &vec){
+    std::cout<<"data:";
+    for(int i=0;i<vec.size();i++){
+        std::cout<<" "<<vec[i];
+    }
+    std::cout<<std::endl;
 }
 
 
@@ -224,41 +223,56 @@ int main(int argc, char** argv){
         exit(1);
     }
     kinematic_state->setJointGroupPositions(joint_model_group,init_joint_values);
+    print(init_joint_values);
     //get jacobian
     kinematic_state->getJacobian(joint_model_group,
                                        kinematic_state->getLinkModel(joint_model_group->getLinkModelNames().back()),
                                        reference_point_position, jacobian);
     std::vector<double> joint_values(init_joint_values);
 
-    std::ofstream out("planned_joint_path_no_opt.txt");
+    std::ofstream out("planned_joint_path_opt.txt");
 
     bool done=false;
     
     ROS_INFO("initialized! start planning!");
     while(!done){
-        out<<joint_values[0]<<" "<<joint_values[1]<<" "<<joint_values[2]<<" "<<joint_values[3]<<" "<<joint_values[4]<<" "<<joint_values[5]<<" "<<joint_values[6]<<" "
-            <<joint_values[7]<<" "<<joint_values[8]<<" "<<joint_values[9]<<" "<<joint_values[10]<<" "<<"\r\n";
-        std::vector<double> cartisian_velocities=compute_next_cartisian_velocities(done);
-
         kinematic_state->getJacobian(joint_model_group,
                                        kinematic_state->getLinkModel(joint_model_group->getLinkModelNames().back()),
                                        reference_point_position, jacobian);
+        double manipulability=compute_manipulability(jacobian);
+        double joint_coffe=compute_joint_coffe(joint_values);
+        #ifndef DEBUG
+        out<<joint_values[0]<<" "<<joint_values[1]<<" "<<joint_values[2]<<" "<<joint_values[3]<<" "<<joint_values[4]<<" "<<joint_values[5]<<" "<<joint_values[6]<<" "
+            <<joint_values[7]<<" "<<joint_values[8]<<" "<<joint_values[9]<<" "<<joint_values[10]<<" "<<manipulability<<" "<<joint_coffe<<"\r\n";
+            
+        #endif
+        std::vector<double> cartisian_velocities=compute_next_cartisian_velocities(done);
+
         
         std::vector<double> delta_manipulability=compute_delta_manipulability(joint_values,kinematic_state,joint_model_group);
         std::vector<double> delta_joint_coffe=compute_delta_joint_coffe(joint_values);
+        #ifdef DEBUG
+            std::cout<<"delta manipulability:"<<std::endl;
+            print(delta_manipulability);
+            std::cout<<"delta joint coffe:"<<std::endl;
+            print(delta_joint_coffe);
+            //break;
+        #endif
 
         //optimize method
-        //std::vector<double> joint_velocities=compute_joint_velocities(&jacobian,delta_manipulability,delta_joint_coffe,cartisian_velocities);
+        std::vector<double> joint_velocities=compute_joint_velocities(&jacobian,delta_manipulability,delta_joint_coffe,cartisian_velocities);
         //no optmization
-        std::vector<double> joint_velocities=compute_joint_velocities_no_opt(&jacobian,cartisian_velocities);
+        //std::vector<double> joint_velocities=compute_joint_velocities_no_opt(&jacobian,cartisian_velocities);
 
         joint_values_update(joint_values,joint_velocities,dt);
 
         kinematic_state->setJointGroupPositions(joint_model_group,joint_values);
     }
+
+    #ifndef DEBUG
+    ROS_INFO("mission complited!!");
+    #endif
     out.close();
 
 }
 
-//TODO compute_delta_manipulability
-//finished compute_next_cartisian_velocities

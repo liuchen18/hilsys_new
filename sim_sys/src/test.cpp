@@ -94,7 +94,6 @@ void compute_z_coffe(double& a,double& b,double& c,double& d,double& e,double& f
     f=current_point[2];
 }
 
-/*compute the cartisian velocities of the next interpolate point*/
 std::vector<double> compute_next_cartisian_velocities(bool &done){
     static int index=(int)(T/dt);
     static int index_point=0;
