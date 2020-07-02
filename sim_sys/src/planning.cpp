@@ -112,7 +112,7 @@ void compute_z_coffe(double& a,double& b,double& c,double& d,double& e,double& f
 /*compute the cartisian velocities of the next interpolate point*/
 std::vector<double> compute_next_cartisian_velocities(bool &done){
     static int index=(int)(T/dt);
-    static int index_point=0;
+    static int index_point=10;
     static double ax,ay,az,bx,by,bz,cx,cy,cz,dx,dy,dz,ex,ey,ez,fx,fy,fz;
     static geometry_msgs::Quaternion current_point_orientation,next_point_orientation;
     std::vector<double> velocities;
@@ -204,11 +204,11 @@ int main(int argc, char** argv){
 
     //init the manipualtor using init pose
     geometry_msgs::Pose init_pose;
-    init_pose.position.x=5;
+    init_pose.position.x=3;
     init_pose.position.y=0;
     init_pose.position.z=0;
     geometry_msgs::Quaternion q;
-    initialize_quaternion(q,0.0,0.0,0.0,1.0);
+    initialize_quaternion(q,0.0,0.0,0.707,0.707);
     init_pose.orientation=q;
      Eigen::Isometry3d init_state=pose_to_Isometry(init_pose);
     //compute ik
@@ -230,7 +230,7 @@ int main(int argc, char** argv){
                                        reference_point_position, jacobian);
     std::vector<double> joint_values(init_joint_values);
 
-    std::ofstream out("planned_joint_path_opt.txt");
+    std::ofstream out("planned_joint_path_opt_joint.txt");
 
     bool done=false;
     

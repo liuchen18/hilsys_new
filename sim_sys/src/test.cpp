@@ -10,7 +10,7 @@
 #include <fstream>
 #include <cmath>
 #include "inverse_kinematics.h"
-
+/*
 const double dt=0.01;
 const double T=1.0;
 
@@ -168,7 +168,7 @@ std::vector<double> compute_next_cartisian_velocities(bool &done){
     std::cout<<"point index: "<<index_point<<std::endl;
     return velocities;
 
-}
+}*/
 
 void print(std::vector<double> &v){
     for(int i=0;i<v.size();i++){
@@ -177,7 +177,7 @@ void print(std::vector<double> &v){
     std::cout<<std::endl;
 }
 
-
+/*
 int main(){
     bool done=false;
     
@@ -185,7 +185,7 @@ int main(){
         std::vector<double> cartisian_velocities=compute_next_cartisian_velocities(done);
         std::cout<<cartisian_velocities[0]<<std::endl;
     }
-    /*
+    
     std::vector<double> current_point,next_point;
     static double ax,ay,az,bx,by,bz,cx,cy,cz,dx,dy,dz,ex,ey,ez,fx,fy,fz;
     current_point=generate_way_points(11);
@@ -202,5 +202,62 @@ int main(){
     std::cout<<"x velocity: "<<vx<<std::endl;
     double x=ax+bx+cx+dx+ex+fx;
     std::cout<<x<<std::endl;
-    */
+    
+}*/
+
+Eigen::Isometry3d pose_to_Isometry(const geometry_msgs::Pose& pose){
+    Eigen::Quaterniond q = Eigen::Quaterniond(pose.orientation.w,pose.orientation.x,pose.orientation.y,pose.orientation.z).normalized();
+    Eigen::Vector3d t = Eigen::Vector3d(pose.position.x,pose.position.y,pose.position.z);
+    Eigen::Isometry3d state = Eigen::Isometry3d::Identity();
+
+    state.rotate(q.toRotationMatrix());
+    state.pretranslate(t);
+    return state;
+
+}
+
+int main(int argc, char** argv){
+    ros::init(argc, argv, "mani_test");
+    ros::NodeHandle nh;
+
+    robot_model_loader::RobotModelLoader robot_model_loader("robot_description");
+    robot_model::RobotModelPtr kinematic_model = robot_model_loader.getModel();
+    ROS_INFO("Model frame: %s", kinematic_model->getModelFrame().c_str());
+
+    robot_state::RobotStatePtr kinematic_state(new robot_state::RobotState(kinematic_model));
+    kinematic_state->setToDefaultValues();
+    const robot_state::JointModelGroup* joint_model_group = kinematic_model->getJointModelGroup("sim_sys");
+    const std::vector<std::string>& joint_names = joint_model_group->getVariableNames();
+
+    Eigen::MatrixXd jacobian;
+    Eigen::Vector3d reference_point_position(0.0, 0.0, 0.0);
+
+    //init the manipualtor using init pose
+    geometry_msgs::Pose init_pose;
+    init_pose.position.x=5;
+    init_pose.position.y=0;
+    init_pose.position.z=0;
+    geometry_msgs::Quaternion q;
+    initialize_quaternion(q,0.0,0.0,0.0,1.0);
+    init_pose.orientation=q;
+     Eigen::Isometry3d init_state=pose_to_Isometry(init_pose);
+    //compute ik
+    double timeout = 0.1;
+    bool found_ik = kinematic_state->setFromIK(joint_model_group, init_state, timeout);
+    std::vector<double> init_joint_values;
+    if (found_ik){
+        kinematic_state->copyJointGroupPositions(joint_model_group, init_joint_values);
+    }
+    else{
+        ROS_ERROR("the given init pose is not availebal");
+        exit(1);
+    }
+    kinematic_state->setJointGroupPositions(joint_model_group,init_joint_values);
+    print(init_joint_values);
+    //get jacobian
+    kinematic_state->getJacobian(joint_model_group,
+                                       kinematic_state->getLinkModel(joint_model_group->getLinkModelNames().back()),
+                                       reference_point_position, jacobian);
+    double manipulability=compute_manipulability(jacobian);
+    std::cout<<"manipulability: "<<manipulability<<std::endl;
 }
