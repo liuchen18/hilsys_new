@@ -1,4 +1,7 @@
 //#define DEBUG
+//#define TRANSLATE
+//#define CIRCLE
+#define MIXED
 
 #include "ros/ros.h"
 #include <Eigen/Dense>
@@ -33,11 +36,13 @@ std::vector<double> generate_way_points(int point_index){
     initialize_quaternion(start_o,0.0,0.0,0.0,1.0);
     initialize_quaternion(mid_o,0.0,0.0,0.707,0.707);
     initialize_quaternion(end_o,0.0,0.0,1.0,0.0);
+    //initialize_quaternion(mid_o,0.0,0.0,0.0,1.0);
+    //initialize_quaternion(end_o,0.0,0.0,0.0,1.0);
 
     std::vector<double> res;
     if(point_index<=10){
         res.emplace_back(5-0.2*point_index);
-        res.emplace_back(0);
+        res.emplace_back(-2+0.2*point_index);
         res.emplace_back(0);
         geometry_msgs::Quaternion q=slerp(start_o,mid_o,(double)(point_index/10));
         res.push_back(q.x);
@@ -45,7 +50,7 @@ std::vector<double> generate_way_points(int point_index){
         res.push_back(q.z);
         res.push_back(q.w);
         res.emplace_back(-0.2);
-        res.emplace_back(0);
+        res.emplace_back(0.2);
         res.emplace_back(0);
         res.emplace_back(0);
         res.emplace_back(0);
@@ -112,7 +117,15 @@ void compute_z_coffe(double& a,double& b,double& c,double& d,double& e,double& f
 /*compute the cartisian velocities of the next interpolate point*/
 std::vector<double> compute_next_cartisian_velocities(bool &done){
     static int index=(int)(T/dt);
-    static int index_point=10;
+    #ifdef TRANSLATE
+        static int index_point=0;
+    #endif
+    #ifdef CIRCLE
+        static int index_point=10;
+    #endif
+    #ifdef MIXED
+        static int index_point=0;
+    #endif
     static double ax,ay,az,bx,by,bz,cx,cy,cz,dx,dy,dz,ex,ey,ez,fx,fy,fz;
     static geometry_msgs::Quaternion current_point_orientation,next_point_orientation;
     std::vector<double> velocities;
@@ -132,9 +145,24 @@ std::vector<double> compute_next_cartisian_velocities(bool &done){
         initialize_quaternion(next_point_orientation,next_point[3],next_point[4],next_point[5],next_point[6]);
 
         index_point+=1;
+
+        #ifdef TRANSLATE
+        if(index_point==10){
+            done=true;
+        }
+        #endif
+
+        #ifdef TRANSLATE
         if(index_point==20){
             done=true;
         }
+        #endif
+
+        #ifdef MIXED
+        if(index_point==20){
+            done=true;
+        }
+        #endif
     }
     //compute translate velocity
     double vx=get_next_position_velocities(ax,bx,cx,dx,ex,index);
@@ -204,11 +232,11 @@ int main(int argc, char** argv){
 
     //init the manipualtor using init pose
     geometry_msgs::Pose init_pose;
-    init_pose.position.x=3;
-    init_pose.position.y=0;
+    init_pose.position.x=5;
+    init_pose.position.y=-2;
     init_pose.position.z=0;
     geometry_msgs::Quaternion q;
-    initialize_quaternion(q,0.0,0.0,0.707,0.707);
+    initialize_quaternion(q,0.0,0.0,0.0,1.0);
     init_pose.orientation=q;
      Eigen::Isometry3d init_state=pose_to_Isometry(init_pose);
     //compute ik
@@ -230,11 +258,11 @@ int main(int argc, char** argv){
                                        reference_point_position, jacobian);
     std::vector<double> joint_values(init_joint_values);
 
-    std::ofstream out("planned_joint_path_opt_joint.txt");
+    std::ofstream out("planned_joint_path_opt_no.txt");
 
     bool done=false;
     
-    ROS_INFO("initialized! start planning!");
+    ROS_INFO("initialized!! start planning!");
     while(!done){
         kinematic_state->getJacobian(joint_model_group,
                                        kinematic_state->getLinkModel(joint_model_group->getLinkModelNames().back()),

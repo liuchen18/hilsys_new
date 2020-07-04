@@ -9,10 +9,13 @@ project(sim_sys)
 ## is used, also find other catkin packages
 find_package(catkin REQUIRED COMPONENTS
   roscpp
+  rospy
   moveit_msgs
   moveit_core
   moveit_ros_planning_interface
   )
+
+catkin_python_setup()
 
 ## System dependencies are found with CMake's conventions
 # find_package(Boost REQUIRED COMPONENTS system)

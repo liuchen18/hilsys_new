@@ -109,7 +109,7 @@ class Executor:
         """Drive the arm to go to the first pose
         """
 
-        rospy.loginfo("Start initiating the pose")
+        rospy.loginfo("FWX Starts initiating the pose")
 
         # a goal to be sent to action server
         goal = FollowJointTrajectoryGoal()
@@ -137,12 +137,12 @@ class Executor:
         #print(goal)
 
         # wait for the result
-        rospy.loginfo("Start waiting for finishing initial pose")
+        rospy.loginfo("FWX is waiting for finishing initial pose")
         self._action_client.wait_for_result()
         rospy.loginfo("Waiting ends")
 
         # show the error code
-        rospy.loginfo(self._action_client.get_result())
+        #rospy.loginfo(self._action_client.get_result())
 
     def send_trajectory(self):
         """Send a goal which contains all the trajectory points to the action server
@@ -340,8 +340,8 @@ class Executor:
             rospy.loginfo("At iteration {}, time Duration is {}".format(traj_idx ,(time_next-time_last).to_sec()))
             time_last = time_next
 
-
-            # uncomment raw_input() if you want to control the pace of sending goals to the action server
+            if rospy.is_shutdown():
+                exit()
             raw_input()
     '''
     def send_base_vel(self):

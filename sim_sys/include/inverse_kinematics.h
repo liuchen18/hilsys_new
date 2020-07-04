@@ -100,8 +100,8 @@ std::vector<double> compute_delta_joint_coffe(std::vector<double> joint_values){
 std::vector<double> compute_joint_velocities(Eigen::MatrixXd* jacobian,std::vector<double> delta_manipulability,
                                                 std::vector<double> delta_joint_coffe,std::vector<double> cartisian_velocities){
     static bool flag=true;
-    double a=0.00;
-    double b=0.05;
+    double a=0.1;
+    double b=0.2;
     Eigen::Matrix<double,11,1> joint_v;
     Eigen::Matrix<double,6,1> cartisian_v;
     for(int i=0;i<6;i++){
@@ -128,7 +128,7 @@ std::vector<double> compute_joint_velocities(Eigen::MatrixXd* jacobian,std::vect
     opt_vec=delta_m*a+delta_j*b;
     Eigen::MatrixXd jacobian_pseudo_inv=pseudo_inverse(*jacobian);
 
-    joint_v=jacobian_pseudo_inv*cartisian_v+(jacobian_pseudo_inv*(*jacobian))*opt_vec;
+    joint_v=jacobian_pseudo_inv*cartisian_v+(matrix_I-jacobian_pseudo_inv*(*jacobian))*opt_vec;
 
     std::vector<double> res;
     for(int i=0;i<11;i++){

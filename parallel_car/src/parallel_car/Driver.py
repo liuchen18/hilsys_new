@@ -154,13 +154,13 @@ class BaseAndMechDriver:
         first_parallel_pose.little_to_zero()
         first_serial_pose.little_to_zero()
         
-        rospy.loginfo("first_parallel_pose: ")
-        print first_parallel_pose
+        #rospy.loginfo("first_parallel_pose: ")
+        #print first_parallel_pose
 
-        rospy.loginfo("first_serial_pose: ")
-        print first_serial_pose
+        #rospy.loginfo("first_serial_pose: ")
+        #print first_serial_pose
         
-        rospy.loginfo("Start going to the first pose")
+        rospy.loginfo("MBX Starts going to the first pose")
 
         goal = FollowJointTrajectoryGoal()
 
@@ -200,7 +200,7 @@ class BaseAndMechDriver:
         self._action_client.send_goal(goal)
 
         # wait for the result
-        rospy.loginfo("Waiting for go to the first pose")
+        rospy.loginfo("MBX is Waiting for go to the first pose")
         self._action_client.wait_for_result()
         rospy.loginfo("Waiting ends")
 
@@ -226,11 +226,11 @@ class BaseAndMechDriver:
         
             rospy.loginfo("At trajectory point {}".format(traj_idx))
             
-            print "parallel_pose_desired: "
-            print parallel_pose_desired
+            #print "parallel_pose_desired: "
+            #print parallel_pose_desired
 
-            print "serial_pose_desired: "
-            print serial_pose_desired
+            #print "serial_pose_desired: "
+            #print serial_pose_desired
 
             # a joint point in the trajectory
             trajPt = JointTrajectoryPoint()
@@ -304,13 +304,14 @@ class BaseAndMechDriver:
             parallel_pose_desired.little_to_zero()
             serial_pose_desired.little_to_zero()
         
-            rospy.loginfo("At trajectory point {}".format(traj_idx))
+            #rospy.loginfo("At trajectory point {}".format(traj_idx))
             
-            print "parallel_pose_desired: "
-            print parallel_pose_desired
+            #print "parallel_pose_desired: "
+            #print parallel_pose_desired
 
-            print "serial_pose_desired: "
-            print serial_pose_desired
+            
+            #print "serial_pose_desired: "
+            #print serial_pose_desired
 
             # a joint point in the trajectory
             trajPt = JointTrajectoryPoint()
@@ -350,7 +351,7 @@ class BaseAndMechDriver:
         self._action_client.send_goal(goal)
 
         # wait for the result
-        rospy.loginfo("Start waiting for go to the resting poses")
+        rospy.loginfo("MBX Start waiting for go to the resting poses")
         self._action_client.wait_for_result()
         rospy.loginfo("Waiting ends")
 
