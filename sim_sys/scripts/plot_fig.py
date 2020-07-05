@@ -252,6 +252,7 @@ def main_2():
     plt.plot(index,data_opt_joint[12],label='only joint limits')
     plt.plot(index,data_opt_lianxu[12],label='mani and joint limits')
     plt.plot(index,data_no_opt[12],label='no optimization')
+    plt.ylim([40,150])
     plt.title('different joint limit function')
     plt.xlabel('index')
     plt.ylabel('joint limit function')

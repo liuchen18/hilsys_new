@@ -6,6 +6,8 @@
 #include <Eigen/Dense>
 #include <cmath>
 #include "ros/ros.h"
+#include "geometry_msgs/Pose.h"
+#include "quaternion.h"
 
 Eigen::MatrixXd pseudo_inverse(Eigen::MatrixXd &jacobian){
     auto svd = jacobian.jacobiSvd(Eigen::ComputeFullU | Eigen::ComputeFullV);
@@ -101,7 +103,7 @@ std::vector<double> compute_joint_velocities(Eigen::MatrixXd* jacobian,std::vect
                                                 std::vector<double> delta_joint_coffe,std::vector<double> cartisian_velocities){
     static bool flag=true;
     double a=0.1;
-    double b=0.2;
+    double b=0.0;
     Eigen::Matrix<double,11,1> joint_v;
     Eigen::Matrix<double,6,1> cartisian_v;
     for(int i=0;i<6;i++){
@@ -167,6 +169,7 @@ double compute_manipulability(Eigen::MatrixXd& jacobian){
     manipulability=std::sqrt(matrix_A.determinant());
     return manipulability;
 }
+
 double compute_joint_coffe(std::vector<double> joint_values){
     double res=0;
     for(int i=0;i<joint_values.size();i++){
@@ -175,6 +178,28 @@ double compute_joint_coffe(std::vector<double> joint_values){
     return res;
 }
 
+std::vector<double> forward_kinematics(std::vector<double> joint_values,
+                                    robot_state::RobotStatePtr kinematic_state,
+                                    const robot_state::JointModelGroup* joint_model_group){
+    std::vector<double> cur_joint_values;
+    kinematic_state->copyJointGroupPositions(joint_model_group, cur_joint_values);
+
+    kinematic_state->setJointGroupPositions(joint_model_group,joint_values);
+    const Eigen::Isometry3d& end_effector_state = kinematic_state->getGlobalLinkTransform("link_7");
+    kinematic_state->setJointGroupPositions(joint_model_group,cur_joint_values);
+
+    geometry_msgs::Pose end_pose=Isometry_to_pose(end_effector_state);
+    std::vector<double> res;
+    res.push_back(end_pose.position.x);
+    res.push_back(end_pose.position.y);
+    res.push_back(end_pose.position.z);
+    res.push_back(end_pose.orientation.x);
+    res.push_back(end_pose.orientation.y);
+    res.push_back(end_pose.orientation.z);
+    res.push_back(end_pose.orientation.w);
+    
+    return res;
+}
 
 
 

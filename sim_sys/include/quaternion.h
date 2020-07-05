@@ -2,6 +2,7 @@
 #define _QUATERNION
 
 #include "geometry_msgs/Quaternion.h"
+#include "geometry_msgs/Pose.h"
 
 
 geometry_msgs::Quaternion slerp(geometry_msgs::Quaternion start_orientation,geometry_msgs::Quaternion end_orientation,const double t){
@@ -61,6 +62,21 @@ void initialize_quaternion(geometry_msgs::Quaternion &q,const double x,const dou
     q.y=y;
     q.z=z;
     q.w=w;
+}
+
+geometry_msgs::Pose Isometry_to_pose(const Eigen::Isometry3d& state){
+    geometry_msgs::Pose pose;
+    pose.position.x=state.translation()[0];
+    pose.position.y=state.translation()[1];
+    pose.position.z=state.translation()[2];
+    Eigen::Quaterniond quaternion(state.rotation());
+    Eigen::Vector4d nums=quaternion.coeffs();
+    pose.orientation.x=nums[0];
+    pose.orientation.y=nums[1];
+    pose.orientation.z=nums[2];
+    pose.orientation.w=nums[3];
+    
+    return pose;
 }
 
 

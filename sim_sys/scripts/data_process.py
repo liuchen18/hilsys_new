@@ -20,7 +20,7 @@ with open(fwx_file_path,'w') as f:
     f.write('this is the fwx joint values'+'\r\n')
 
 #input trajectory file dir
-input_file_path='/home/chen/ws_chen/src/hilsys/sim_sys/data/mixed/planned_joint_path_opt_tongshi.txt'
+input_file_path='/home/chen/ws_chen/src/hilsys/sim_sys/data/mixed/planned_joint_path_opt_both.txt'
 
 joints_values=dict()
 for i in range(11):

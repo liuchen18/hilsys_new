@@ -14,7 +14,8 @@
 #include <iostream>
 #include <fstream>
 #include <cmath>
-#include "inverse_kinematics.h"
+#include "kinematics.h"
+#include "string.h"
 
 const double dt=0.01;
 const double T=1.0;
@@ -33,43 +34,41 @@ Eigen::Isometry3d pose_to_Isometry(const geometry_msgs::Pose& pose){
 
 std::vector<double> generate_way_points(int point_index){
     geometry_msgs::Quaternion start_o,mid_o,end_o;
-    initialize_quaternion(start_o,0.0,0.0,0.0,1.0);
-    initialize_quaternion(mid_o,0.0,0.0,0.707,0.707);
-    initialize_quaternion(end_o,0.0,0.0,1.0,0.0);
-    //initialize_quaternion(mid_o,0.0,0.0,0.0,1.0);
-    //initialize_quaternion(end_o,0.0,0.0,0.0,1.0);
+    initialize_quaternion(start_o,0.0,0.0,0.0,1.0);//hou
+    initialize_quaternion(mid_o,0.0,0.0,0.707,0.707);//ce
+    initialize_quaternion(end_o,0.0,0.0,1.0,0.0);//qian
 
     std::vector<double> res;
     if(point_index<=10){
-        res.emplace_back(5-0.2*point_index);
-        res.emplace_back(-2+0.2*point_index);
+        res.emplace_back(5-0.3*point_index);
         res.emplace_back(0);
-        geometry_msgs::Quaternion q=slerp(start_o,mid_o,(double)(point_index/10));
+        res.emplace_back(0);
+        geometry_msgs::Quaternion q=slerp(start_o,mid_o,(point_index*1.0/10));
         res.push_back(q.x);
         res.push_back(q.y);
         res.push_back(q.z);
         res.push_back(q.w);
-        res.emplace_back(-0.2);
-        res.emplace_back(0.2);
+        res.emplace_back(-0.3);
+        res.emplace_back(0);
         res.emplace_back(0);
         res.emplace_back(0);
         res.emplace_back(0);
         res.emplace_back(0);
     }
     else{
-        res.emplace_back(3*std::cos(M_PI*(point_index-10)/20.0));
-        res.emplace_back(3*std::sin(M_PI*(point_index-10)/20.0));
+        res.emplace_back(2*std::cos(M_PI*(point_index-10)/20.0));
+        res.emplace_back(2*std::sin(M_PI*(point_index-10)/20.0));
         res.emplace_back(0);
-        geometry_msgs::Quaternion q=slerp(mid_o,end_o,(double)((point_index-10)/10));
+        geometry_msgs::Quaternion q=slerp(mid_o,end_o,((point_index-10)*1.0/10));
         res.emplace_back(q.x);
         res.emplace_back(q.y);
         res.emplace_back(q.z);
         res.emplace_back(q.w);
-        res.emplace_back(-M_PI*3/20*std::sin(M_PI*(point_index-10)/20.0));
-        res.emplace_back(M_PI*3/20*std::cos(M_PI*(point_index-10)/20.0));
+        res.emplace_back(-M_PI*2/20*std::sin(M_PI*(point_index-10)/20.0));
+        res.emplace_back(M_PI*2/20*std::cos(M_PI*(point_index-10)/20.0));
         res.emplace_back(0);
-        res.emplace_back(-M_PI*M_PI*3/400*std::cos(M_PI*(point_index-10)/20.0));
-        res.emplace_back(-M_PI*M_PI*3/400*std::sin(M_PI*(point_index-10)/20.0));
+        res.emplace_back(-M_PI*M_PI*2/400*std::cos(M_PI*(point_index-10)/20.0));
+        res.emplace_back(-M_PI*M_PI*2/400*std::sin(M_PI*(point_index-10)/20.0));
         res.emplace_back(0);
     }
 
@@ -241,7 +240,8 @@ int main(int argc, char** argv){
      Eigen::Isometry3d init_state=pose_to_Isometry(init_pose);
     //compute ik
     double timeout = 0.1;
-    bool found_ik = kinematic_state->setFromIK(joint_model_group, init_state, timeout);
+    std::string end_name="link_7";
+    bool found_ik = kinematic_state->setFromIK(joint_model_group, init_state,end_name, timeout);
     std::vector<double> init_joint_values;
     if (found_ik){
         kinematic_state->copyJointGroupPositions(joint_model_group, init_joint_values);
@@ -251,32 +251,45 @@ int main(int argc, char** argv){
         exit(1);
     }
     kinematic_state->setJointGroupPositions(joint_model_group,init_joint_values);
-    print(init_joint_values);
+
+    #ifdef DEBUG
+        print(init_joint_values);
+    #endif
+
     //get jacobian
     kinematic_state->getJacobian(joint_model_group,
                                        kinematic_state->getLinkModel(joint_model_group->getLinkModelNames().back()),
                                        reference_point_position, jacobian);
     std::vector<double> joint_values(init_joint_values);
 
-    std::ofstream out("planned_joint_path_opt_no.txt");
+    std::ofstream out("planned_joint_path_opt_mani.txt");
 
     bool done=false;
     
     ROS_INFO("initialized!! start planning!");
     while(!done){
+        //get jacobian
         kinematic_state->getJacobian(joint_model_group,
                                        kinematic_state->getLinkModel(joint_model_group->getLinkModelNames().back()),
                                        reference_point_position, jacobian);
+
+        //compute manipulability and joint linits function
         double manipulability=compute_manipulability(jacobian);
         double joint_coffe=compute_joint_coffe(joint_values);
         #ifndef DEBUG
         out<<joint_values[0]<<" "<<joint_values[1]<<" "<<joint_values[2]<<" "<<joint_values[3]<<" "<<joint_values[4]<<" "<<joint_values[5]<<" "<<joint_values[6]<<" "
-            <<joint_values[7]<<" "<<joint_values[8]<<" "<<joint_values[9]<<" "<<joint_values[10]<<" "<<manipulability<<" "<<joint_coffe<<"\r\n";
+            <<joint_values[7]<<" "<<joint_values[8]<<" "<<joint_values[9]<<" "<<joint_values[10]<<" "<<manipulability<<" "<<joint_coffe<<" ";
             
         #endif
-        std::vector<double> cartisian_velocities=compute_next_cartisian_velocities(done);
 
-        
+        //compute desired cartisian velosity
+        std::vector<double> cartisian_velocities=compute_next_cartisian_velocities(done);
+        #ifdef DEBUG
+            std::cout<<"current cartisian velocities:"<<std::endl;
+            print(cartisian_velocities);
+        #endif
+
+        //compute optimization vector
         std::vector<double> delta_manipulability=compute_delta_manipulability(joint_values,kinematic_state,joint_model_group);
         std::vector<double> delta_joint_coffe=compute_delta_joint_coffe(joint_values);
         #ifdef DEBUG
@@ -284,7 +297,6 @@ int main(int argc, char** argv){
             print(delta_manipulability);
             std::cout<<"delta joint coffe:"<<std::endl;
             print(delta_joint_coffe);
-            //break;
         #endif
 
         //optimize method
@@ -295,6 +307,13 @@ int main(int argc, char** argv){
         joint_values_update(joint_values,joint_velocities,dt);
 
         kinematic_state->setJointGroupPositions(joint_model_group,joint_values);
+
+        //compute forward kinematics
+        std::vector<double> fk=forward_kinematics(joint_values,kinematic_state,joint_model_group);
+
+        #ifndef DEBUG
+            out<<fk[0]<<" "<<fk[1]<<" "<<fk[2]<<" "<<fk[3]<<" "<<fk[4]<<" "<<fk[5]<<" "<<fk[6]<<" "<<"\r\n";
+        #endif
     }
 
     #ifndef DEBUG

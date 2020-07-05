@@ -750,7 +750,7 @@
       </visual>
       <collision>
         <geometry>
-          <mesh filename="package://sim_sys/mesh/xiao_arm.STL"/>
+          <mesh filename="package://sim_sys/mesh/xiangji.STL"/>
         </geometry>
       </collision>
       <xacro:cylinder_inertial radius="0.05" length="0.01" mass="0.01">

@@ -9,8 +9,9 @@
 #include <iostream>
 #include <fstream>
 #include <cmath>
-#include "inverse_kinematics.h"
-/*
+#include "kinematics.h"
+#include "string.h"
+
 const double dt=0.01;
 const double T=1.0;
 
@@ -25,7 +26,7 @@ std::vector<double> generate_way_points(int point_index){
         res.emplace_back(5-0.3*point_index);
         res.emplace_back(0);
         res.emplace_back(0);
-        geometry_msgs::Quaternion q=slerp(start_o,mid_o,(double)(point_index/10));
+        geometry_msgs::Quaternion q=slerp(start_o,mid_o,(point_index*1.0/10));
         res.push_back(q.x);
         res.push_back(q.y);
         res.push_back(q.z);
@@ -41,7 +42,7 @@ std::vector<double> generate_way_points(int point_index){
         res.emplace_back(2*std::cos(M_PI*(point_index-10)/20.0));
         res.emplace_back(2*std::sin(M_PI*(point_index-10)/20.0));
         res.emplace_back(0);
-        geometry_msgs::Quaternion q=slerp(mid_o,end_o,(double)((point_index-10)/10));
+        geometry_msgs::Quaternion q=slerp(mid_o,end_o,((point_index-10)*1.0/10));
         res.emplace_back(q.x);
         res.emplace_back(q.y);
         res.emplace_back(q.z);
@@ -56,7 +57,7 @@ std::vector<double> generate_way_points(int point_index){
 
     return res;
 }
-
+/*
 double get_next_position_velocities(double a,double b,double c,double d,double e,int index){
     return 5*a*std::pow(index*dt,4)+4*b*std::pow(index*dt,3)+3*c*std::pow(index*dt,2)+2*d*index*dt+e;
 }
@@ -179,6 +180,11 @@ void print(std::vector<double> &v){
 
 /*
 int main(){
+    for(int i=0;i<20;i++){
+        std::vector<double> path_point=generate_way_points(i);
+        print(path_point);
+    }
+    
     bool done=false;
     
     while(!done){
@@ -203,7 +209,9 @@ int main(){
     double x=ax+bx+cx+dx+ex+fx;
     std::cout<<x<<std::endl;
     
+    
 }*/
+
 
 Eigen::Isometry3d pose_to_Isometry(const geometry_msgs::Pose& pose){
     Eigen::Quaterniond q = Eigen::Quaterniond(pose.orientation.w,pose.orientation.x,pose.orientation.y,pose.orientation.z).normalized();
@@ -243,7 +251,8 @@ int main(int argc, char** argv){
      Eigen::Isometry3d init_state=pose_to_Isometry(init_pose);
     //compute ik
     double timeout = 0.1;
-    bool found_ik = kinematic_state->setFromIK(joint_model_group, init_state, timeout);
+    std::string end_name="pan_link";
+    bool found_ik = kinematic_state->setFromIK(joint_model_group, init_state,timeout);
     std::vector<double> init_joint_values;
     if (found_ik){
         kinematic_state->copyJointGroupPositions(joint_model_group, init_joint_values);
@@ -252,12 +261,11 @@ int main(int argc, char** argv){
         ROS_ERROR("the given init pose is not availebal");
         exit(1);
     }
-    kinematic_state->setJointGroupPositions(joint_model_group,init_joint_values);
+    std::cout<<"default ik result:"<<std::endl;
     print(init_joint_values);
-    //get jacobian
-    kinematic_state->getJacobian(joint_model_group,
-                                       kinematic_state->getLinkModel(joint_model_group->getLinkModelNames().back()),
-                                       reference_point_position, jacobian);
-    double manipulability=compute_manipulability(jacobian);
-    std::cout<<"manipulability: "<<manipulability<<std::endl;
+    std::vector<double> fk=forward_kinematics(init_joint_values,kinematic_state,joint_model_group);
+    std::cout<<"default ik fk:"<<std::endl;
+    print(fk);
+
+
 }
