@@ -17,14 +17,14 @@ const double T=1.0;
 
 std::vector<double> generate_way_points(int point_index){
     geometry_msgs::Quaternion start_o,mid_o,end_o;
-    initialize_quaternion(start_o,0.0,0.0,0.0,1.0);
-    initialize_quaternion(mid_o,0.0,0.0,0.707,0.707);
-    initialize_quaternion(end_o,0.0,0.0,1.0,0.0);
+    initialize_quaternion(start_o,0.0,0.0,0.707,0.707);//hou
+    initialize_quaternion(mid_o,0.0,0.0,0.707,0.707);//ce
+    initialize_quaternion(end_o,0.0,0.0,0,1);//qian
 
     std::vector<double> res;
     if(point_index<=10){
         res.emplace_back(5-0.3*point_index);
-        res.emplace_back(0);
+        res.emplace_back(0.2*point_index);
         res.emplace_back(0);
         geometry_msgs::Quaternion q=slerp(start_o,mid_o,(point_index*1.0/10));
         res.push_back(q.x);
@@ -32,7 +32,7 @@ std::vector<double> generate_way_points(int point_index){
         res.push_back(q.z);
         res.push_back(q.w);
         res.emplace_back(-0.3);
-        res.emplace_back(0);
+        res.emplace_back(0.2);
         res.emplace_back(0);
         res.emplace_back(0);
         res.emplace_back(0);
@@ -40,7 +40,7 @@ std::vector<double> generate_way_points(int point_index){
     }
     else{
         res.emplace_back(2*std::cos(M_PI*(point_index-10)/20.0));
-        res.emplace_back(2*std::sin(M_PI*(point_index-10)/20.0));
+        res.emplace_back(2+2*std::sin(M_PI*(point_index-10)/20.0));
         res.emplace_back(0);
         geometry_msgs::Quaternion q=slerp(mid_o,end_o,((point_index-10)*1.0/10));
         res.emplace_back(q.x);
@@ -178,13 +178,28 @@ void print(std::vector<double> &v){
     std::cout<<std::endl;
 }
 
-/*
+
 int main(){
+    std::ofstream out("desired_path_points.txt");
     for(int i=0;i<20;i++){
         std::vector<double> path_point=generate_way_points(i);
         print(path_point);
+        out<<path_point[0]<<" "<<path_point[1]<<" "<<path_point[2]<<" "<<path_point[3]<<" "<<path_point[4]<<" "<<path_point[5]<<" "<<path_point[6]<<"\r\n";
     }
-    
+
+    /*
+    geometry_msgs::Quaternion start_o,mid_o,end_o;
+    initialize_quaternion(start_o,0.0,0.0,0.0,1.0);//hou
+    initialize_quaternion(mid_o,0.8944,0.0,0.0,0.4472);//ce
+    initialize_quaternion(end_o,0.0,0.0,1.0,0.0);//qian
+
+    std::vector<double> cha=quaternion_dot(mid_o,end_o);
+    print(cha);
+    */
+
+
+}
+    /*
     bool done=false;
     
     while(!done){
@@ -212,7 +227,7 @@ int main(){
     
 }*/
 
-
+/*
 Eigen::Isometry3d pose_to_Isometry(const geometry_msgs::Pose& pose){
     Eigen::Quaterniond q = Eigen::Quaterniond(pose.orientation.w,pose.orientation.x,pose.orientation.y,pose.orientation.z).normalized();
     Eigen::Vector3d t = Eigen::Vector3d(pose.position.x,pose.position.y,pose.position.z);
@@ -268,4 +283,4 @@ int main(int argc, char** argv){
     print(fk);
 
 
-}
+}*/

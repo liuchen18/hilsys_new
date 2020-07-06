@@ -35,9 +35,9 @@ with open(input_file_path,'r') as f:
 with open(mbx_file_path,'a') as f:
     for i in range(len(joints_values[0])):
         wx_pose=Pose()
-        wx_pose.position.x=-(joints_values[1][i]+3)/2 #this means the x position of the car
+        wx_pose.position.x=-(joints_values[1][i])/2 #this means the x position of the car
         wx_pose.position.y=-joints_values[2][i]/2 #this means the y position of the car
-        wx_pose.position.z=1 
+        wx_pose.position.z=0.81+0.25*math.tan(joints_values[0][i])
 
         wx_pose.orientation=euler_to_quaternion(-math.pi/2+joints_values[0][i],0,0)
 
@@ -46,7 +46,7 @@ with open(mbx_file_path,'a') as f:
 
 with open(fwx_file_path,'a') as f:
     for i in range(len(joints_values[0])):
-        f.write(str(i*dt)+' '+str((3+joints_values[1][i])/2)+' '+str(joints_values[2][i]/2)+' '+str(joints_values[3][i])+' '+str(joints_values[4][i])+\
+        f.write(str(i*dt)+' '+str((joints_values[1][i])/2)+' '+str(joints_values[2][i]/2)+' '+str(joints_values[3][i])+' '+str(joints_values[4][i])+\
             ' '+str(joints_values[5][i])+' '+str(joints_values[6][i])+' '+str(joints_values[7][i])+' '+str(joints_values[8][i])+' '+str(joints_values[9][i])+\
             ' '+str(joints_values[10][i])+'\r\n')
 

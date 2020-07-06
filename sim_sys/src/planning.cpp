@@ -31,17 +31,25 @@ Eigen::Isometry3d pose_to_Isometry(const geometry_msgs::Pose& pose){
 
 }
 
+void print(std::vector<double> &vec){
+    std::cout<<"data:";
+    for(int i=0;i<vec.size();i++){
+        std::cout<<" "<<vec[i];
+    }
+    std::cout<<std::endl;
+}
+
 
 std::vector<double> generate_way_points(int point_index){
     geometry_msgs::Quaternion start_o,mid_o,end_o;
-    initialize_quaternion(start_o,0.0,0.0,0.0,1.0);//hou
+    initialize_quaternion(start_o,0.0,0.0,0.707,0.707);//hou
     initialize_quaternion(mid_o,0.0,0.0,0.707,0.707);//ce
-    initialize_quaternion(end_o,0.0,0.0,1.0,0.0);//qian
+    initialize_quaternion(end_o,0.0,0.0,0,1);//qian
 
     std::vector<double> res;
     if(point_index<=10){
         res.emplace_back(5-0.3*point_index);
-        res.emplace_back(0);
+        res.emplace_back(0.2*point_index);
         res.emplace_back(0);
         geometry_msgs::Quaternion q=slerp(start_o,mid_o,(point_index*1.0/10));
         res.push_back(q.x);
@@ -49,7 +57,7 @@ std::vector<double> generate_way_points(int point_index){
         res.push_back(q.z);
         res.push_back(q.w);
         res.emplace_back(-0.3);
-        res.emplace_back(0);
+        res.emplace_back(0.2);
         res.emplace_back(0);
         res.emplace_back(0);
         res.emplace_back(0);
@@ -57,7 +65,7 @@ std::vector<double> generate_way_points(int point_index){
     }
     else{
         res.emplace_back(2*std::cos(M_PI*(point_index-10)/20.0));
-        res.emplace_back(2*std::sin(M_PI*(point_index-10)/20.0));
+        res.emplace_back(2+2*std::sin(M_PI*(point_index-10)/20.0));
         res.emplace_back(0);
         geometry_msgs::Quaternion q=slerp(mid_o,end_o,((point_index-10)*1.0/10));
         res.emplace_back(q.x);
@@ -146,19 +154,19 @@ std::vector<double> compute_next_cartisian_velocities(bool &done){
         index_point+=1;
 
         #ifdef TRANSLATE
-        if(index_point==10){
+        if(index_point==11){
             done=true;
         }
         #endif
 
         #ifdef TRANSLATE
-        if(index_point==20){
+        if(index_point==21){
             done=true;
         }
         #endif
 
         #ifdef MIXED
-        if(index_point==20){
+        if(index_point==21){
             done=true;
         }
         #endif
@@ -173,6 +181,9 @@ std::vector<double> compute_next_cartisian_velocities(bool &done){
 
     double coff=2.0;
     geometry_msgs::Quaternion current_inter_p=slerp(current_point_orientation,next_point_orientation,index*dt);
+
+    //std::cout<<current_inter_p.x<<" "<<current_inter_p.y<<" "<<current_inter_p.z<<" "<<current_inter_p.w<<std::endl;
+
     geometry_msgs::Quaternion last_inter_p,next_inter_p;
     if(index>=1){
         last_inter_p=slerp(current_point_orientation,next_point_orientation,(index-1)*dt);
@@ -182,10 +193,10 @@ std::vector<double> compute_next_cartisian_velocities(bool &done){
         coff-=1.0;
     }
     if(index<=99){
-        last_inter_p=slerp(current_point_orientation,next_point_orientation,(index+1)*dt);
+        next_inter_p=slerp(current_point_orientation,next_point_orientation,(index+1)*dt);
     }
     else{
-        last_inter_p=slerp(current_point_orientation,next_point_orientation,index*dt);
+        next_inter_p=slerp(current_point_orientation,next_point_orientation,index*dt);
         coff-=1.0;
     }
     geometry_msgs::Quaternion d_q=get_derivate(next_inter_p,last_inter_p,coff,dt);
@@ -204,13 +215,7 @@ std::vector<double> compute_next_cartisian_velocities(bool &done){
     return velocities;
 
 }
-void print(std::vector<double> &vec){
-    std::cout<<"data:";
-    for(int i=0;i<vec.size();i++){
-        std::cout<<" "<<vec[i];
-    }
-    std::cout<<std::endl;
-}
+
 
 
 int main(int argc, char** argv){
@@ -232,10 +237,10 @@ int main(int argc, char** argv){
     //init the manipualtor using init pose
     geometry_msgs::Pose init_pose;
     init_pose.position.x=5;
-    init_pose.position.y=-2;
+    init_pose.position.y=0;
     init_pose.position.z=0;
     geometry_msgs::Quaternion q;
-    initialize_quaternion(q,0.0,0.0,0.0,1.0);
+    initialize_quaternion(q,0.0,0.0,0.707,0.707);
     init_pose.orientation=q;
      Eigen::Isometry3d init_state=pose_to_Isometry(init_pose);
     //compute ik
@@ -253,7 +258,7 @@ int main(int argc, char** argv){
     kinematic_state->setJointGroupPositions(joint_model_group,init_joint_values);
 
     #ifdef DEBUG
-        print(init_joint_values);
+    print(init_joint_values);
     #endif
 
     //get jacobian
@@ -262,11 +267,15 @@ int main(int argc, char** argv){
                                        reference_point_position, jacobian);
     std::vector<double> joint_values(init_joint_values);
 
-    std::ofstream out("planned_joint_path_opt_mani.txt");
+    std::ofstream out("planned_joint_path_opt_both.txt");
 
     bool done=false;
     
     ROS_INFO("initialized!! start planning!");
+
+    #ifdef DEBUG
+    int it=0;
+    #endif
     while(!done){
         //get jacobian
         kinematic_state->getJacobian(joint_model_group,
@@ -277,7 +286,7 @@ int main(int argc, char** argv){
         double manipulability=compute_manipulability(jacobian);
         double joint_coffe=compute_joint_coffe(joint_values);
         #ifndef DEBUG
-        out<<joint_values[0]<<" "<<joint_values[1]<<" "<<joint_values[2]<<" "<<joint_values[3]<<" "<<joint_values[4]<<" "<<joint_values[5]<<" "<<joint_values[6]<<" "
+        out<<joint_values[0]<<" "<<joint_values[1]+3<<" "<<joint_values[2]<<" "<<joint_values[3]<<" "<<joint_values[4]<<" "<<joint_values[5]<<" "<<joint_values[6]<<" "
             <<joint_values[7]<<" "<<joint_values[8]<<" "<<joint_values[9]<<" "<<joint_values[10]<<" "<<manipulability<<" "<<joint_coffe<<" ";
             
         #endif
@@ -297,6 +306,10 @@ int main(int argc, char** argv){
             print(delta_manipulability);
             std::cout<<"delta joint coffe:"<<std::endl;
             print(delta_joint_coffe);
+            it+=1;
+            if(it>10){
+                break;
+            }
         #endif
 
         //optimize method

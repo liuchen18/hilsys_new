@@ -73,26 +73,23 @@ std::vector<double> compute_delta_manipulability(std::vector<double> joint_value
 }
 
 const double max_joint_values[11]={M_PI*2.0/9.0,8.0,8.0,2.0*M_PI,
-                                    M_PI,M_PI,M_PI,M_PI,M_PI,M_PI,M_PI};
-const double min_joint_values[11]={-M_PI*1.0/9.0,-8.0,-8.0,-2.0*M_PI,
-                                    -M_PI,-M_PI,-M_PI,-M_PI,-M_PI,-M_PI,-M_PI};
+                                    M_PI*170/180,M_PI*120/180,M_PI*170/180,M_PI*120/180,M_PI*170/180,M_PI*120/180,M_PI*175/180};
+const double min_joint_values[11]={-M_PI*1.5/18.0,-8.0,-8.0,-2.0*M_PI,
+                                    -M_PI*170/180,-M_PI*120/180,-M_PI*170/180,-M_PI*120/180,-M_PI*170/180,-M_PI*120/180,-M_PI*175/180};
 
 std::vector<double> compute_delta_joint_coffe(std::vector<double> joint_values){
     std::vector<double> res;
     if(joint_values.size()!=11){
         ROS_ERROR("invalid joint values input");
     }
+    joint_values[1]+=3;
     for(int i=0;i<11;i++){
         double cur_res=-std::pow(max_joint_values[i]-min_joint_values[i],2)*(2*joint_values[i]-max_joint_values[i]-min_joint_values[i])/
                         std::pow(max_joint_values[i]-joint_values[i],2)/std::pow(joint_values[i]-min_joint_values[i],2);
-        /*if(std::abs(cur_res)>0.5){
-            if(cur_res<0){
-                cur_res=-0.5;
-            }
-            else{
-                cur_res=0.5;
-            }
-        }*/
+        if(i==1 || i==2){
+            cur_res*=0;
+            //std::cout<<cur_res<<std::endl;
+        }
         res.push_back(cur_res);
     }
     return res;
@@ -102,8 +99,11 @@ std::vector<double> compute_delta_joint_coffe(std::vector<double> joint_values){
 std::vector<double> compute_joint_velocities(Eigen::MatrixXd* jacobian,std::vector<double> delta_manipulability,
                                                 std::vector<double> delta_joint_coffe,std::vector<double> cartisian_velocities){
     static bool flag=true;
+
     double a=0.1;
-    double b=0.0;
+    double b=0.025;
+    //double a=0;
+    //double b=0;
     Eigen::Matrix<double,11,1> joint_v;
     Eigen::Matrix<double,6,1> cartisian_v;
     for(int i=0;i<6;i++){
@@ -166,14 +166,19 @@ void joint_values_update(std::vector<double>& joint_values,std::vector<double> j
 double compute_manipulability(Eigen::MatrixXd& jacobian){
     double manipulability=0.0;
     Eigen::MatrixXd matrix_A=jacobian*(jacobian.transpose());
-    manipulability=std::sqrt(matrix_A.determinant());
+    manipulability=std::sqrt(std::abs(matrix_A.determinant()));
+    //std::cout<<manipulability<<" "<<matrix_A.determinant()<<std::endl;
     return manipulability;
 }
 
 double compute_joint_coffe(std::vector<double> joint_values){
     double res=0;
     for(int i=0;i<joint_values.size();i++){
-        res+=std::pow(max_joint_values[i]-min_joint_values[i],2)/(max_joint_values[i]-joint_values[i])/(joint_values[i]-min_joint_values[i]);
+        double t=std::pow(max_joint_values[i]-min_joint_values[i],2)/(max_joint_values[i]-joint_values[i])/(joint_values[i]-min_joint_values[i])/4-1;
+        if(i==1 || i==2){
+            t=0;
+        }
+        res+=t;
     }
     return res;
 }

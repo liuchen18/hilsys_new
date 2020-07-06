@@ -207,5 +207,5 @@ include_directories("/usr/include/eigen3")
 add_executable(plan_path src/planning.cpp)
 target_link_libraries(plan_path ${catkin_LIBRARIES})
 
-add_executable(test src/test.cpp)
-target_link_libraries(test ${catkin_LIBRARIES})
+#add_executable(test src/test.cpp)
+#target_link_libraries(test ${catkin_LIBRARIES})
