@@ -42,10 +42,10 @@
     <param name="robot_description" command="$(find xacro)/xacro '$(find parallel_car)/urdf/parallel_car.urdf.xacro'"/>
 
     <node name="parallel_car_spawn" pkg="gazebo_ros" type="spawn_model" output="screen"
-    args=" -urdf -param robot_description -model drone" />
+    args=" -urdf -param robot_description -model parallel_car" />
  
     <node name="parallel_car_robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher">
-      <remap from="/joint_states" to="/drone/joint_states"/>
+      <remap from="/joint_states" to="/parallel_car/joint_states"/>
     </node>
 
     <rosparam file="$(find parallel_car)/config/controllers.yaml" command="load" ns="/parallel_car"/>

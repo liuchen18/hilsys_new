@@ -187,7 +187,7 @@ class Executor:
         #for traj_idx in range(len(goal.trajectory.points)):
         #    print goal.trajectory.points[traj_idx]
 
-        goal.trajectory.header.stamp = rospy.Time.now() + rospy.Duration(1.0)
+        goal.trajectory.header.stamp = rospy.Time.now()
 
         # send the goal to the action server
         self._action_client.send_goal(goal)

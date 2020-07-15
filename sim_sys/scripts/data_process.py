@@ -37,7 +37,8 @@ with open(mbx_file_path,'a') as f:
         wx_pose=Pose()
         wx_pose.position.x=-(joints_values[1][i])/2 #this means the x position of the car
         wx_pose.position.y=-joints_values[2][i]/2 #this means the y position of the car
-        wx_pose.position.z=0.81+0.25*math.tan(joints_values[0][i])
+        #wx_pose.position.z=0.81+0.25*math.tan(joints_values[0][i])
+        wx_pose.position.z=0.91
 
         wx_pose.orientation=euler_to_quaternion(-math.pi/2+joints_values[0][i],0,0)
 

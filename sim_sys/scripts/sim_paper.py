@@ -7,8 +7,10 @@ from parallel_car.IKSolver import SerialIKSolver
 from parallel_car.Driver import BaseAndMechDriver
 from parallel_car.PrintFunc import print_tf
 from iiwa_agv.Executor import Executor
-from geometry_msgs.msg import Transform, Vector3, Quaternion
+from geometry_msgs.msg import Transform, Vector3, Quaternion,TransformStamped
 from threading import Thread
+import tf2_ros
+import tf
 
 # either 'rviz' or 'gazebo'
 RUN_ENV = 'gazebo'
@@ -23,6 +25,30 @@ def send_path(ob):
 def send_path_one_by_one(ob):
     ob.send_trajectory_one_by_one(0.1)
 
+def tf_listener(tf_buf,start_time):
+    rate=rospy.Rate(50)
+
+    while rospy.get_time()-start_time<20 and not rospy.is_shutdown():
+        try:
+            transform_stamped = tf_buf.lookup_transform('wx_virtual', 'link_7', rospy.Time())
+            with open('/home/chen/ws_chen/src/hilsys/sim_sys/data/mixed/tf.txt','a') as f:
+                v=transform_stamped.transform.translation
+                q=transform_stamped.transform.rotation
+                with open(output_file_path,'a') as f:
+                    f.write(str(rospy.get_time()-start_time)+' '+str(v.x)+' '+str(v.y)+' '+str(v.z)+' '+str(q.x)+' '+str(q.y)+' '+str(q.z)+' '+str(q.w)+'\r\n')
+                '''
+                print('current time: '+str(rospy.get_time()-start_time))
+                print('translation:')
+                print(str(v.x)+' '+str(v.y)+' '+str(v.z))
+                print('rotation')
+                print(str(q.x)+' '+str(q.y)+' '+str(q.z)+' '+str(q.w))    
+                '''      
+
+        except (tf2_ros.LookupException, tf2_ros.ConnectivityException, tf2_ros.ExtrapolationException):
+            rospy.logerr("Transform lookup exception")
+            print(rospy.get_time())
+        rate.sleep()
+
 
 if __name__ == "__main__":
     rospy.init_node("start_sim")
@@ -32,6 +58,7 @@ if __name__ == "__main__":
     #trajectory 1
     mbx_file_path = "/home/chen/ws_chen/src/hilsys/sim_sys/data/mbx.txt"
     fwx_file_path = '/home/chen/ws_chen/src/hilsys/sim_sys/data/fwx.txt'
+    output_file_path='/home/chen/ws_chen/src/hilsys/sim_sys/data/real_data.txt'
 
     #trajectory 2
     #mbx_file_path = "/home/chen/ws_chen/src/hilsys/sim_sys/data/mbx_planned_trajectory_zheng.txt"
@@ -79,8 +106,19 @@ if __name__ == "__main__":
         (parallel_pose_desired, serial_pose_desired) = seri_ik.compute_ik_from_o_to_wx_tf(o_to_wx_tf)
         # drive store both parallel pose and serial pose inside
         driver.append_pose_desired(parallel_pose_desired, serial_pose_desired)
-
-    
+    '''
+    tfBuffer = tf2_ros.Buffer()
+    listener = tf2_ros.TransformListener(tfBuffer)
+    start_time=rospy.get_time()
+    try:
+        tf_thratd=Thread(target=tf_listener,args=(tfBuffer,start_time,))
+        tf_thratd.start()
+        tf_thratd.join()
+        
+    except:
+        rospy.logerr('unable to start new thread, plz try again')
+        exit()
+    '''
     #drive the robot to the init pose
     try:
         fwx_init_thread=Thread(target=init_pose,args=(exe,))
@@ -94,19 +132,31 @@ if __name__ == "__main__":
         exit()
 
     rospy.loginfo('the robots are initialized! ')
+
+    #add tf listener
+    tfBuffer = tf2_ros.Buffer()
+    listener = tf2_ros.TransformListener(tfBuffer)
+
     raw_input("Enter to start the simulation")
+    with open(output_file_path,'w') as f:
+        f.write('this is the real data. link_7 w r t wx_virtual'+'\r\n') 
+    start_time=rospy.get_time()
 
     #send the trajectory to the robot
     
     try:
         fwx_thread=Thread(target=send_path,args=(exe,))
         mbx_thread=Thread(target=send_path,args=(driver,))
+        tf_thratd=Thread(target=tf_listener,args=(tfBuffer,start_time,))
         fwx_thread.start()
         mbx_thread.start()
+        tf_thratd.start()
         fwx_thread.join()
         mbx_thread.join()
+        tf_thratd.join()
         
     except:
         rospy.logerr('unable to start new thread, plz try again')
         exit()
+    
     
